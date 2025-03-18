@@ -11,12 +11,11 @@ import {
   PenLine, 
   PenTool, 
   Users,
-  Globe 
 } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const Skills = () => {
-  const { t, language, setLanguage } = useTranslation();
+  const { t } = useTranslation();
   
   const skillCategories = [
     {
@@ -55,26 +54,6 @@ const Skills = () => {
         <p className="text-gray-600 max-w-2xl mx-auto">
           {t('skillsDescription')}
         </p>
-        <div className="flex justify-center mt-4 space-x-4">
-          <button 
-            onClick={() => setLanguage('en')} 
-            className={`px-3 py-1 rounded ${language === 'en' ? 'bg-portfolio-yellow text-black' : 'bg-gray-200'}`}
-          >
-            English
-          </button>
-          <button 
-            onClick={() => setLanguage('ru')} 
-            className={`px-3 py-1 rounded ${language === 'ru' ? 'bg-portfolio-yellow text-black' : 'bg-gray-200'}`}
-          >
-            Русский
-          </button>
-          <button 
-            onClick={() => setLanguage('pl')} 
-            className={`px-3 py-1 rounded ${language === 'pl' ? 'bg-portfolio-yellow text-black' : 'bg-gray-200'}`}
-          >
-            Polski
-          </button>
-        </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
