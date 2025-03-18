@@ -5,7 +5,7 @@ import {
   Video, 
   BarChart3, 
   Camera, 
-  MicrophoneStage, 
+  Mic, 
   Languages, 
   Newspaper, 
   PenLine, 
@@ -19,7 +19,7 @@ const Skills = () => {
       title: 'Journalism',
       skills: [
         { name: 'News Writing', icon: <Newspaper size={20} />, level: 95 },
-        { name: 'Interviewing', icon: <MicrophoneStage size={20} />, level: 90 },
+        { name: 'Interviewing', icon: <Mic size={20} />, level: 90 },
         { name: 'Research', icon: <Pencil size={20} />, level: 85 },
         { name: 'Storytelling', icon: <PenLine size={20} />, level: 90 }
       ]
