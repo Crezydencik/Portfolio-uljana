@@ -76,7 +76,7 @@ const Portfolio = () => {
         category: 'Entertainment',
         image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
         link: '#',
-        description: 'Creative direction and editing for an indie band's latest single release.'
+        description: "Creative direction and editing for an indie band's latest single release."
       },
     ],
     marketing: [
