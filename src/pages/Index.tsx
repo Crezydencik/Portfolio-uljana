@@ -8,6 +8,7 @@ import Portfolio from '@/components/Portfolio';
 import Certificates from '@/components/Certificates';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import { TranslationProvider } from '@/hooks/useTranslation';
 
 const Index = () => {
   // Animation on scroll implementation
@@ -38,18 +39,20 @@ const Index = () => {
   }, []);
   
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Portfolio />
-        <Certificates />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <TranslationProvider>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main>
+          <Hero />
+          <About />
+          <Skills />
+          <Portfolio />
+          <Certificates />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
+    </TranslationProvider>
   );
 };
 

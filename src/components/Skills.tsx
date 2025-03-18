@@ -10,36 +10,40 @@ import {
   Newspaper, 
   PenLine, 
   PenTool, 
-  Users 
+  Users,
+  Globe 
 } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 const Skills = () => {
+  const { t, language, setLanguage } = useTranslation();
+  
   const skillCategories = [
     {
-      title: 'Journalism',
+      title: t('journalism'),
       skills: [
-        { name: 'News Writing', icon: <Newspaper size={20} />, level: 95 },
-        { name: 'Interviewing', icon: <Mic size={20} />, level: 90 },
-        { name: 'Research', icon: <Pencil size={20} />, level: 85 },
-        { name: 'Storytelling', icon: <PenLine size={20} />, level: 90 }
+        { name: t('newsWriting'), icon: <Newspaper size={20} /> },
+        { name: t('interviewing'), icon: <Mic size={20} /> },
+        { name: t('research'), icon: <Pencil size={20} /> },
+        { name: t('storytelling'), icon: <PenLine size={20} /> }
       ]
     },
     {
-      title: 'Video Editing',
+      title: t('videoEditing'),
       skills: [
-        { name: 'Adobe Premiere Pro', icon: <Video size={20} />, level: 85 },
-        { name: 'Final Cut Pro', icon: <Video size={20} />, level: 80 },
-        { name: 'Cinematography', icon: <Camera size={20} />, level: 75 },
-        { name: 'Motion Graphics', icon: <PenTool size={20} />, level: 70 }
+        { name: t('adobePremiere'), icon: <Video size={20} /> },
+        { name: t('finalCutPro'), icon: <Video size={20} /> },
+        { name: t('cinematography'), icon: <Camera size={20} /> },
+        { name: t('motionGraphics'), icon: <PenTool size={20} /> }
       ]
     },
     {
-      title: 'Marketing',
+      title: t('marketing'),
       skills: [
-        { name: 'Content Strategy', icon: <BarChart3 size={20} />, level: 85 },
-        { name: 'Social Media', icon: <Users size={20} />, level: 90 },
-        { name: 'SEO', icon: <BarChart3 size={20} />, level: 80 },
-        { name: 'Analytics', icon: <BarChart3 size={20} />, level: 75 }
+        { name: t('contentStrategy'), icon: <BarChart3 size={20} /> },
+        { name: t('socialMedia'), icon: <Users size={20} /> },
+        { name: t('seo'), icon: <BarChart3 size={20} /> },
+        { name: t('analytics'), icon: <BarChart3 size={20} /> }
       ]
     }
   ];
@@ -47,40 +51,49 @@ const Skills = () => {
   return (
     <section className="section-container bg-portfolio-gray">
       <div className="text-center mb-16">
-        <h2 className="section-title mx-auto">My Skills</h2>
+        <h2 className="section-title mx-auto">{t('mySkills')}</h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          I've cultivated a diverse set of skills across journalism, video production, and marketing.
+          {t('skillsDescription')}
         </p>
+        <div className="flex justify-center mt-4 space-x-4">
+          <button 
+            onClick={() => setLanguage('en')} 
+            className={`px-3 py-1 rounded ${language === 'en' ? 'bg-portfolio-yellow text-black' : 'bg-gray-200'}`}
+          >
+            English
+          </button>
+          <button 
+            onClick={() => setLanguage('ru')} 
+            className={`px-3 py-1 rounded ${language === 'ru' ? 'bg-portfolio-yellow text-black' : 'bg-gray-200'}`}
+          >
+            Русский
+          </button>
+          <button 
+            onClick={() => setLanguage('pl')} 
+            className={`px-3 py-1 rounded ${language === 'pl' ? 'bg-portfolio-yellow text-black' : 'bg-gray-200'}`}
+          >
+            Polski
+          </button>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
         {skillCategories.map((category, index) => (
           <div key={index} className="bg-white p-6 rounded-lg shadow-md animate-on-scroll" style={{ animationDelay: `${index * 150}ms` }}>
             <h3 className="text-xl font-semibold mb-6 flex items-center">
-              {category.title === 'Journalism' && <Pencil className="mr-2 text-portfolio-yellow" />}
-              {category.title === 'Video Editing' && <Video className="mr-2 text-portfolio-yellow" />}
-              {category.title === 'Marketing' && <BarChart3 className="mr-2 text-portfolio-yellow" />}
+              {category.title === t('journalism') && <Pencil className="mr-2 text-portfolio-yellow" />}
+              {category.title === t('videoEditing') && <Video className="mr-2 text-portfolio-yellow" />}
+              {category.title === t('marketing') && <BarChart3 className="mr-2 text-portfolio-yellow" />}
               {category.title}
             </h3>
-            <div className="space-y-4">
+            <ul className="space-y-4">
               {category.skills.map((skill, skillIndex) => (
-                <div key={skillIndex} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <span className="mr-2 text-portfolio-yellow">{skill.icon}</span>
-                      <span>{skill.name}</span>
-                    </div>
-                    <span className="text-sm font-medium">{skill.level}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-portfolio-yellow h-2 rounded-full transition-all duration-1000 ease-out" 
-                      style={{ width: `${skill.level}%`, transitionDelay: `${skillIndex * 100}ms` }}
-                    ></div>
-                  </div>
-                </div>
+                <li key={skillIndex} className="flex items-center">
+                  <span className="mr-3 text-portfolio-yellow">{skill.icon}</span>
+                  <span>{skill.name}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         ))}
       </div>

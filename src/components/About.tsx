@@ -1,18 +1,14 @@
 
 import React from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 
 const About = () => {
-  const stats = [
-    { number: '15+', label: 'Articles Written' },
-    { number: '350+', label: 'Edited Videos' },
-    { number: '200+', label: 'Marketing Campaigns' },
-    { number: '45K', label: 'Social Media Followers' }
-  ];
-
+  const { t } = useTranslation();
+  
   return (
     <section id="about" className="section-container bg-white">
       <div className="text-center mb-16">
-        <h2 className="section-title mx-auto">About Me</h2>
+        <h2 className="section-title mx-auto">{t('aboutMe')}</h2>
       </div>
 
       <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -25,29 +21,35 @@ const About = () => {
               loading="lazy"
             />
             <div className="absolute -bottom-6 -right-6 bg-portfolio-yellow p-4 rounded-md shadow-lg">
-              <p className="font-medium text-sm md:text-base">Anna Smith, Journalist & Content Creator</p>
+              <p className="font-medium text-sm md:text-base">{t('journalistTitle')}</p>
             </div>
           </div>
         </div>
 
         <div className="animate-on-scroll delay-150">
           <h3 className="text-2xl md:text-3xl font-semibold mb-4">
-            Passionate storyteller with a decade of multimedia experience
+            {t('aboutHeading')}
           </h3>
           <p className="text-gray-700 mb-6">
-            I am a versatile content creator specializing in journalism, video production, and digital marketing. With over 10 years of experience in the media industry, I've developed a keen eye for compelling stories and the technical skills to bring them to life across multiple platforms.
+            {t('aboutParagraph1')}
           </p>
           <p className="text-gray-700 mb-8">
-            My approach combines thorough research, creative storytelling, and strategic thinking to create content that not only informs but also engages and inspires audiences.
+            {t('aboutParagraph2')}
           </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {stats.map((stat, index) => (
-              <div key={index} className="stat-item">
-                <div className="stat-number">{stat.number}</div>
-                <div className="stat-label">{stat.label}</div>
-              </div>
-            ))}
+            <div className="bg-portfolio-gray p-4 rounded-md text-center">
+              <div className="font-medium">{t('articlesWritten')}</div>
+            </div>
+            <div className="bg-portfolio-gray p-4 rounded-md text-center">
+              <div className="font-medium">{t('editedVideos')}</div>
+            </div>
+            <div className="bg-portfolio-gray p-4 rounded-md text-center">
+              <div className="font-medium">{t('marketingCampaigns')}</div>
+            </div>
+            <div className="bg-portfolio-gray p-4 rounded-md text-center">
+              <div className="font-medium">{t('socialMediaFollowers')}</div>
+            </div>
           </div>
         </div>
       </div>
