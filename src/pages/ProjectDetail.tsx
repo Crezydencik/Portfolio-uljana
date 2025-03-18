@@ -104,13 +104,64 @@ const projectsData = {
       <p class="mb-4">The strategy received the Sustainable Marketing Excellence Award and has been featured as a case study in business schools focusing on environmentally conscious brand development.</p>
     `,
     relatedProjects: ["non-profit-awareness-drive", "restaurant-rebranding"]
+  },
+  // Add placeholder data for missing related projects to prevent errors
+  "healthcare-reform": {
+    id: "healthcare-reform",
+    title: "Healthcare Reform Investigation",
+    category: "Investigative",
+    author: "Anna Smith",
+    date: "February 3, 2023",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    content: `<p>Detailed content about the healthcare reform investigation...</p>`,
+    relatedProjects: ["climate-change-investigation", "tech-industry-expose"]
+  },
+  "travel-series-hidden-gems": {
+    id: "travel-series-hidden-gems",
+    title: "Travel Series: Hidden Gems",
+    category: "Documentary",
+    author: "Anna Smith",
+    date: "May 15, 2022",
+    image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    content: `<p>Detailed content about the travel series...</p>`,
+    relatedProjects: ["urban-wildlife-documentary", "music-video-production"]
+  },
+  "music-video-production": {
+    id: "music-video-production",
+    title: "Music Video Production",
+    category: "Creative",
+    author: "Anna Smith",
+    date: "August 22, 2022",
+    image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    content: `<p>Detailed content about the music video production...</p>`,
+    relatedProjects: ["urban-wildlife-documentary", "travel-series-hidden-gems"]
+  },
+  "non-profit-awareness-drive": {
+    id: "non-profit-awareness-drive",
+    title: "Non-Profit Awareness Campaign",
+    category: "Campaign",
+    author: "Anna Smith",
+    date: "January 10, 2023",
+    image: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    content: `<p>Detailed content about the non-profit awareness campaign...</p>`,
+    relatedProjects: ["eco-friendly-product-launch", "restaurant-rebranding"]
+  },
+  "restaurant-rebranding": {
+    id: "restaurant-rebranding",
+    title: "Restaurant Rebranding",
+    category: "Branding",
+    author: "Anna Smith",
+    date: "March 5, 2023",
+    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    content: `<p>Detailed content about the restaurant rebranding project...</p>`,
+    relatedProjects: ["eco-friendly-product-launch", "non-profit-awareness-drive"]
   }
 };
 
 const ProjectDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams<{id: string}>();
   const { t } = useTranslation();
-  const project = projectsData[id as keyof typeof projectsData];
+  const project = id ? projectsData[id as keyof typeof projectsData] : undefined;
 
   useEffect(() => {
     // Scroll to top when the component mounts
@@ -148,10 +199,10 @@ const ProjectDetail = () => {
         <Header />
         <main className="flex-grow flex items-center justify-center">
           <div className="text-center p-8">
-            <h2 className="text-2xl font-semibold mb-4">Project Not Found</h2>
-            <p className="mb-6">The project you're looking for doesn't exist or has been moved.</p>
+            <h2 className="text-2xl font-semibold mb-4">{t('projectNotFound')}</h2>
+            <p className="mb-6">{t('projectMoved')}</p>
             <Link to="/" className="portfolio-button">
-              Return to Home
+              {t('returnHome')}
             </Link>
           </div>
         </main>
@@ -174,7 +225,7 @@ const ProjectDetail = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
             <div className="container max-w-6xl mx-auto px-4 py-8">
               <Link to="/#portfolio" className="inline-flex items-center text-white mb-4 hover:text-portfolio-yellow transition-colors">
-                <ArrowLeft size={16} className="mr-2" /> Back to Portfolio
+                <ArrowLeft size={16} className="mr-2" /> {t('backToPortfolio')}
               </Link>
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{project.title}</h1>
               <div className="flex flex-wrap gap-4 text-sm text-white/80">
@@ -199,10 +250,11 @@ const ProjectDetail = () => {
           {/* Related projects */}
           {project.relatedProjects && project.relatedProjects.length > 0 && (
             <div className="mt-16">
-              <h3 className="text-2xl font-semibold mb-6">Related Projects</h3>
+              <h3 className="text-2xl font-semibold mb-6">{t('relatedProjects')}</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 {project.relatedProjects.map(relatedId => {
                   const relatedProject = projectsData[relatedId as keyof typeof projectsData];
+                  if (!relatedProject) return null;
                   return (
                     <Link 
                       key={relatedId} 
@@ -234,7 +286,7 @@ const ProjectDetail = () => {
               to="/#portfolio" 
               className="portfolio-button inline-flex items-center"
             >
-              View All Projects <ExternalLink size={16} className="ml-2" />
+              {t('viewAllProjects')} <ExternalLink size={16} className="ml-2" />
             </Link>
           </div>
         </div>
