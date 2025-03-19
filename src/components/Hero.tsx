@@ -12,12 +12,9 @@ const Hero = () => {
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div className="order-2 md:order-1 animate-fade-up">
             <div className="mb-4">
-              <span className="inline-block px-3 py-1 text-xs font-medium bg-portfolio-yellow rounded-full mb-4">
-                Professional Journalist
-              </span>
               <h1 className="text-4xl md:text-6xl font-bold mb-4">
                 Hi there!<br />
-                I'm <span className="text-portfolio-yellow">Anna</span>
+                I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent from-purple-400 to-pink-500">Ulyana</span>
               </h1>
               <p className="text-lg text-gray-600 mb-6">
                 Passionate journalist with expertise in video editing and marketing. 
@@ -43,14 +40,11 @@ const Hero = () => {
           <div className="order-1 md:order-2 animate-fade-in">
             <div className="relative aspect-[4/3] bg-white p-4 shadow-lg rotate-3 hover:rotate-0 transition-all duration-500">
               <img 
-                src="https://images.unsplash.com/photo-1609921141835-710b7fa6e438?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" 
-                alt="Anna - Professional Journalist" 
+                src="/photo/Main.png" 
+                alt="Ulijana - Journalist" 
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute -bottom-4 -right-4 bg-portfolio-yellow px-4 py-2 shadow-md">
-                <span className="font-medium">5+ Years Experience</span>
-              </div>
             </div>
           </div>
         </div>

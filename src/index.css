@@ -112,11 +112,13 @@
   
   .section-title::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-1/2 h-1 bg-portfolio-yellow;
+    @apply absolute bottom-0 left-0 w-1/2 h-1 bg-gradient-to-r from-accent from-purple-400 to-pink-500;
   }
-
   .portfolio-button {
-    @apply bg-portfolio-yellow hover:bg-yellow-600 text-black font-medium py-2 px-4 rounded transition-all duration-300 inline-block;
+    @apply bg-gradient-to-r from-accent from-purple-400 to-pink-500  text-white  font-medium py-2 px-4 rounded transition-all duration-300 inline-block;
+  }
+  .portfolio-button:hover {
+    @apply from-purple-600 to-pink-700;
   }
 
   .portfolio-card {
@@ -134,8 +136,14 @@
   .stat-label {
     @apply text-sm text-portfolio-dark-gray;
   }
-}
+  .color-gradient {
+   @apply text-pink-400;
+  }
+  .title-gradient{
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-accent from-purple-400 to-pink-500
+  }
 
+}
 /* Animation utilities */
 .animate-on-scroll {
   opacity: 0;
