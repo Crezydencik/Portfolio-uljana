@@ -1,181 +1,159 @@
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+type Language = 'en' | 'ru' | 'pl';
 
-// Define the translation content
+interface TranslationContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: keyof typeof translations['en']) => string;
+}
+
 const translations = {
   en: {
-    // Skills section
-    mySkills: 'My Skills',
-    skillsDescription: 'I\'ve cultivated a diverse set of skills across journalism, video production, and marketing.',
-    journalism: 'Journalism',
-    videoEditing: 'Video Editing',
-    marketing: 'Marketing',
-    newsWriting: 'News Writing',
-    interviewing: 'Interviewing',
-    research: 'Research',
-    storytelling: 'Storytelling',
-    adobePremiere: 'Adobe Premiere Pro',
-    finalCutPro: 'Final Cut Pro',
-    cinematography: 'Cinematography',
-    motionGraphics: 'Motion Graphics',
-    contentStrategy: 'Content Strategy',
-    socialMedia: 'Social Media',
-    seo: 'SEO',
-    analytics: 'Analytics',
-    
-    // About section
-    aboutMe: 'About Me',
-    journalistTitle: 'Anna Smith, Journalist & Content Creator',
-    aboutHeading: 'Passionate storyteller with a decade of multimedia experience',
-    aboutParagraph1: 'I am a versatile content creator specializing in journalism, video production, and digital marketing. With over 10 years of experience in the media industry, I\'ve developed a keen eye for compelling stories and the technical skills to bring them to life across multiple platforms.',
-    aboutParagraph2: 'My approach combines thorough research, creative storytelling, and strategic thinking to create content that not only informs but also engages and inspires audiences.',
-    articlesWritten: 'Articles Written',
-    editedVideos: 'Edited Videos',
-    marketingCampaigns: 'Marketing Campaigns',
-    socialMediaFollowers: 'Social Media Followers',
-    
-    // Contact section
-    getInTouch: 'Get In Touch',
-    contactDescription: 'Interested in collaborating or have a project in mind? I\'d love to hear from you.',
-    contactInformation: 'Contact Information',
-    email: 'Email',
-    phone: 'Phone',
-    location: 'Location',
-    followMe: 'Follow Me',
-    
-    // Footer
-    footerTagline: 'Storytelling across all media.',
-    allRightsReserved: 'All rights reserved.'
+    mySkills: "My Skills",
+    skillsDescription: "I've developed expertise across multiple communications disciplines",
+    journalism: "Journalism",
+    videoEditing: "Video Editing",
+    marketing: "Marketing",
+    newsWriting: "News Writing",
+    interviewing: "Interviewing",
+    research: "Research",
+    storytelling: "Storytelling",
+    adobePremiere: "Adobe Premiere Pro",
+    finalCutPro: "Final Cut Pro",
+    videoProduction: "Video Production",
+    colorGrading: "Color Grading",
+    audioEditing: "Audio Editing",
+    digitalMarketing: "Digital Marketing",
+    contentStrategy: "Content Strategy",
+    socialMedia: "Social Media",
+    brandings: "Branding",
+    analytics: "Analytics",
+    aboutMe: "About Me",
+    contactMe: "Contact Me",
+    contactTagline: "Let's work together",
+    emailMe: "Email Me",
+    callMe: "Call Me",
+    followMe: "Follow Me",
+    fullName: "Full Name",
+    email: "Email",
+    message: "Message",
+    send: "Send Message",
+    phone: "Phone",
+    instagram: "Instagram",
+    linkedin: "LinkedIn",
+    twitter: "Twitter",
+    footerTagline: "Journalist. Content Creator. Marketer.",
+    allRightsReserved: "All Rights Reserved",
+    certificates: "Certificates",
+    notFound: "Project Not Found",
+    projectNotFoundMessage: "The project you're looking for may have been moved or deleted.",
+    backHome: "Return to Home",
+    backToProjects: "Back to Portfolio",
+    related: "Related Projects",
+    viewAll: "View All Projects"
   },
   ru: {
-    // Skills section
-    mySkills: 'Мои Навыки',
-    skillsDescription: 'Я развила разнообразный набор навыков в журналистике, видеопроизводстве и маркетинге.',
-    journalism: 'Журналистика',
-    videoEditing: 'Видеомонтаж',
-    marketing: 'Маркетинг',
-    newsWriting: 'Написание новостей',
-    interviewing: 'Интервьюирование',
-    research: 'Исследования',
-    storytelling: 'Повествование',
-    adobePremiere: 'Adobe Premiere Pro',
-    finalCutPro: 'Final Cut Pro',
-    cinematography: 'Кинематография',
-    motionGraphics: 'Моушн-графика',
-    contentStrategy: 'Контент-стратегия',
-    socialMedia: 'Социальные сети',
-    seo: 'SEO',
-    analytics: 'Аналитика',
-    
-    // About section
-    aboutMe: 'Обо Мне',
-    journalistTitle: 'Анна Смит, Журналист и Создатель Контента',
-    aboutHeading: 'Увлеченный рассказчик с десятилетним опытом в мультимедиа',
-    aboutParagraph1: 'Я универсальный создатель контента, специализирующийся на журналистике, видеопроизводстве и цифровом маркетинге. Имея более 10 лет опыта в медиаиндустрии, я развила острый взгляд на увлекательные истории и технические навыки для их воплощения на различных платформах.',
-    aboutParagraph2: 'Мой подход сочетает в себе тщательное исследование, творческое повествование и стратегическое мышление для создания контента, который не только информирует, но и вовлекает и вдохновляет аудиторию.',
-    articlesWritten: 'Написанные Статьи',
-    editedVideos: 'Отредактированные Видео',
-    marketingCampaigns: 'Маркетинговые Кампании',
-    socialMediaFollowers: 'Подписчики в Соцсетях',
-    
-    // Contact section
-    getInTouch: 'Связаться',
-    contactDescription: 'Заинтересованы в сотрудничестве или есть проект на примете? Буду рада услышать от вас.',
-    contactInformation: 'Контактная Информация',
-    email: 'Электронная почта',
-    phone: 'Телефон',
-    location: 'Местоположение',
-    followMe: 'Подписывайтесь',
-    
-    // Footer
-    footerTagline: 'Рассказываю истории на любых медиа.',
-    allRightsReserved: 'Все права защищены.'
+    mySkills: "Мои Навыки",
+    skillsDescription: "Я развила экспертизу в различных коммуникационных дисциплинах",
+    journalism: "Журналистика",
+    videoEditing: "Видеомонтаж",
+    marketing: "Маркетинг",
+    newsWriting: "Написание новостей",
+    interviewing: "Проведение интервью",
+    research: "Исследование",
+    storytelling: "Сторителлинг",
+    adobePremiere: "Adobe Premiere Pro",
+    finalCutPro: "Final Cut Pro",
+    videoProduction: "Видеопроизводство",
+    colorGrading: "Цветокоррекция",
+    audioEditing: "Аудиомонтаж",
+    digitalMarketing: "Цифровой маркетинг",
+    contentStrategy: "Контент-стратегия",
+    socialMedia: "Социальные сети",
+    brandings: "Брендинг",
+    analytics: "Аналитика",
+    aboutMe: "Обо мне",
+    contactMe: "Связаться со мной",
+    contactTagline: "Давайте работать вместе",
+    emailMe: "Написать мне",
+    callMe: "Позвонить мне",
+    followMe: "Подписаться",
+    fullName: "Полное имя",
+    email: "Электронная почта",
+    message: "Сообщение",
+    send: "Отправить сообщение",
+    phone: "Телефон",
+    instagram: "Instagram",
+    linkedin: "LinkedIn",
+    twitter: "Twitter",
+    footerTagline: "Журналист. Создатель контента. Маркетолог.",
+    allRightsReserved: "Все права защищены",
+    certificates: "Сертификаты",
+    notFound: "Проект не найден",
+    projectNotFoundMessage: "Проект, который вы ищете, возможно, был перемещен или удален.",
+    backHome: "Вернуться на главную",
+    backToProjects: "Назад к портфолио",
+    related: "Связанные проекты",
+    viewAll: "Посмотреть все проекты"
   },
   pl: {
-    // Skills section
-    mySkills: 'Moje Umiejętności',
-    skillsDescription: 'Rozwijałam różnorodne umiejętności w dziedzinie dziennikarstwa, produkcji wideo i marketingu.',
-    journalism: 'Dziennikarstwo',
-    videoEditing: 'Montaż Wideo',
-    marketing: 'Marketing',
-    newsWriting: 'Pisanie Wiadomości',
-    interviewing: 'Przeprowadzanie Wywiadów',
-    research: 'Badania',
-    storytelling: 'Opowiadanie Historii',
-    adobePremiere: 'Adobe Premiere Pro',
-    finalCutPro: 'Final Cut Pro',
-    cinematography: 'Kinematografia',
-    motionGraphics: 'Grafika Ruchoma',
-    contentStrategy: 'Strategia Treści',
-    socialMedia: 'Media Społecznościowe',
-    seo: 'SEO',
-    analytics: 'Analityka',
-    
-    // About section
-    aboutMe: 'O Mnie',
-    journalistTitle: 'Anna Smith, Dziennikarka i Twórczyni Treści',
-    aboutHeading: 'Pasjonatka opowiadania historii z dziesięcioletnim doświadczeniem multimediów',
-    aboutParagraph1: 'Jestem wszechstronną twórczynią treści specjalizującą się w dziennikarstwie, produkcji wideo i marketingu cyfrowym. Z ponad 10-letnim doświadczeniem w branży medialnej, rozwinęłam bystre oko do kompelujących historii i techniczne umiejętności, aby ożywić je na wielu platformach.',
-    aboutParagraph2: 'Moje podejście łączy dokładne badania, kreatywne opowiadanie historii i strategiczne myślenie, aby tworzyć treści, które nie tylko informują, ale również angażują i inspirują odbiorców.',
-    articlesWritten: 'Napisane Artykuły',
-    editedVideos: 'Zmontowane Filmy',
-    marketingCampaigns: 'Kampanie Marketingowe',
-    socialMediaFollowers: 'Obserwujący w Mediach Społecznościowych',
-    
-    // Contact section
-    getInTouch: 'Kontakt',
-    contactDescription: 'Zainteresowany współpracą lub masz projekt na myśli? Chętnie się z Tobą skontaktuję.',
-    contactInformation: 'Informacje Kontaktowe',
-    email: 'Email',
-    phone: 'Telefon',
-    location: 'Lokalizacja',
-    followMe: 'Obserwuj Mnie',
-    
-    // Footer
-    footerTagline: 'Opowiadanie historii we wszystkich mediach.',
-    allRightsReserved: 'Wszelkie prawa zastrzeżone.'
+    mySkills: "Moje Umiejętności",
+    skillsDescription: "Rozwinęłam ekspertyzę w wielu dziedzinach komunikacji",
+    journalism: "Dziennikarstwo",
+    videoEditing: "Edycja wideo",
+    marketing: "Marketing",
+    newsWriting: "Pisanie wiadomości",
+    interviewing: "Przeprowadzanie wywiadów",
+    research: "Badania",
+    storytelling: "Storytelling",
+    adobePremiere: "Adobe Premiere Pro",
+    finalCutPro: "Final Cut Pro",
+    videoProduction: "Produkcja wideo",
+    colorGrading: "Koloryzacja",
+    audioEditing: "Edycja audio",
+    digitalMarketing: "Marketing cyfrowy",
+    contentStrategy: "Strategia treści",
+    socialMedia: "Media społecznościowe",
+    brandings: "Branding",
+    analytics: "Analityka",
+    aboutMe: "O mnie",
+    contactMe: "Kontakt",
+    contactTagline: "Współpracujmy razem",
+    emailMe: "Napisz do mnie",
+    callMe: "Zadzwoń do mnie",
+    followMe: "Obserwuj mnie",
+    fullName: "Pełne imię",
+    email: "Email",
+    message: "Wiadomość",
+    send: "Wyślij wiadomość",
+    phone: "Telefon",
+    instagram: "Instagram",
+    linkedin: "LinkedIn",
+    twitter: "Twitter",
+    footerTagline: "Dziennikarka. Twórca treści. Marketingowiec.",
+    allRightsReserved: "Wszelkie prawa zastrzeżone",
+    certificates: "Certyfikaty",
+    notFound: "Nie znaleziono projektu",
+    projectNotFoundMessage: "Projekt, którego szukasz, mógł zostać przeniesiony lub usunięty.",
+    backHome: "Powrót do strony głównej",
+    backToProjects: "Powrót do portfolio",
+    related: "Powiązane projekty",
+    viewAll: "Zobacz wszystkie projekty"
   }
 };
 
-type Language = 'en' | 'ru' | 'pl';
-type TranslationKey = keyof typeof translations.en;
-
-interface TranslationContextType {
-  t: (key: TranslationKey) => string;
-  language: Language;
-  setLanguage: (lang: Language) => void;
-}
-
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
 
-export const TranslationProvider: React.FC<{children: ReactNode}> = ({ children }) => {
+export const TranslationProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('en');
 
-  useEffect(() => {
-    // Attempt to get language from localStorage
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && ['en', 'ru', 'pl'].includes(savedLanguage)) {
-      setLanguage(savedLanguage);
-    } else {
-      // Fallback to browser language or default
-      const browserLang = navigator.language.split('-')[0];
-      if (browserLang === 'ru') setLanguage('ru');
-      else if (browserLang === 'pl') setLanguage('pl');
-      // Default is already 'en'
-    }
-  }, []);
-
-  useEffect(() => {
-    // Save language preference
-    localStorage.setItem('language', language);
-  }, [language]);
-
-  const t = (key: TranslationKey) => {
-    return translations[language][key] || translations.en[key] || key;
+  const t = (key: keyof typeof translations['en']): string => {
+    return translations[language][key] || key;
   };
 
   return (
-    <TranslationContext.Provider value={{ t, language, setLanguage }}>
+    <TranslationContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </TranslationContext.Provider>
   );

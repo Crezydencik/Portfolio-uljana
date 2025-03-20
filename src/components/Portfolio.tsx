@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { Link } from 'react-router-dom';
+import { ExternalLink } from 'lucide-react';
 
 const Portfolio = () => {
   const { t } = useTranslation();
@@ -43,7 +45,7 @@ const Portfolio = () => {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((project) => (
-          <Link key={project.id} to={`/project/${project.id}`} className="portfolio-card animate-on-scroll">
+          <div key={project.id} className="portfolio-card animate-on-scroll group">
             <div className="relative">
               <img
                 src={project.image}
@@ -51,12 +53,26 @@ const Portfolio = () => {
                 className="w-full aspect-video object-cover"
                 loading="lazy"
               />
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <Link 
+                  to={`/project/${project.id}`} 
+                  className="bg-white text-black px-4 py-2 rounded-md flex items-center gap-2 hover:bg-portfolio-yellow transition-colors"
+                >
+                  {t('viewAll')} <ExternalLink size={16} />
+                </Link>
+              </div>
             </div>
             <div className="p-6">
               <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-              <p className="text-gray-600">{project.category}</p>
+              <p className="text-gray-600 mb-4">{project.category}</p>
+              <Link 
+                to={`/project/${project.id}`} 
+                className="text-portfolio-black font-medium inline-flex items-center border-b border-transparent hover:border-portfolio-black"
+              >
+                View Project <ExternalLink size={14} className="ml-1" />
+              </Link>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </section>

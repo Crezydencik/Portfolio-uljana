@@ -199,10 +199,10 @@ const ProjectDetail = () => {
         <Header />
         <main className="flex-grow flex items-center justify-center">
           <div className="text-center p-8">
-            <h2 className="text-2xl font-semibold mb-4">{t('projectNotFound')}</h2>
-            <p className="mb-6">{t('projectMoved')}</p>
+            <h2 className="text-2xl font-semibold mb-4">{t('notFound')}</h2>
+            <p className="mb-6">{t('projectNotFoundMessage')}</p>
             <Link to="/" className="portfolio-button">
-              {t('returnHome')}
+              {t('backHome')}
             </Link>
           </div>
         </main>
@@ -225,7 +225,7 @@ const ProjectDetail = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
             <div className="container max-w-6xl mx-auto px-4 py-8">
               <Link to="/#portfolio" className="inline-flex items-center text-white mb-4 hover:text-portfolio-yellow transition-colors">
-                <ArrowLeft size={16} className="mr-2" /> {t('backToPortfolio')}
+                <ArrowLeft size={16} className="mr-2" /> {t('backToProjects')}
               </Link>
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{project.title}</h1>
               <div className="flex flex-wrap gap-4 text-sm text-white/80">
@@ -250,7 +250,7 @@ const ProjectDetail = () => {
           {/* Related projects */}
           {project.relatedProjects && project.relatedProjects.length > 0 && (
             <div className="mt-16">
-              <h3 className="text-2xl font-semibold mb-6">{t('relatedProjects')}</h3>
+              <h3 className="text-2xl font-semibold mb-6">{t('related')}</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 {project.relatedProjects.map(relatedId => {
                   const relatedProject = projectsData[relatedId as keyof typeof projectsData];
@@ -286,7 +286,7 @@ const ProjectDetail = () => {
               to="/#portfolio" 
               className="portfolio-button inline-flex items-center"
             >
-              {t('viewAllProjects')} <ExternalLink size={16} className="ml-2" />
+              {t('viewAll')} <ExternalLink size={16} className="ml-2" />
             </Link>
           </div>
         </div>
