@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'en' | 'ru' | 'pl';
@@ -51,7 +52,14 @@ const translations = {
     backHome: "Return to Home",
     backToProjects: "Back to Portfolio",
     related: "Related Projects",
-    viewAll: "View All Projects"
+    viewAll: "View All Projects",
+    // Adding missing translation keys
+    getInTouch: "Get In Touch",
+    contactDescription: "Feel free to reach out for collaborations or just a friendly hello",
+    contactInformation: "Contact Information",
+    location: "Location",
+    cinematography: "Cinematography",
+    seo: "SEO"
   },
   ru: {
     mySkills: "Мои Навыки",
@@ -95,7 +103,14 @@ const translations = {
     backHome: "Вернуться на главную",
     backToProjects: "Назад к портфолио",
     related: "Связанные проекты",
-    viewAll: "Посмотреть все проекты"
+    viewAll: "Посмотреть все проекты",
+    // Adding missing translation keys
+    getInTouch: "Обратная связь",
+    contactDescription: "Свяжитесь со мной для сотрудничества или просто поздороваться",
+    contactInformation: "Контактная информация",
+    location: "Местоположение",
+    cinematography: "Операторская съемка",
+    seo: "SEO-оптимизация"
   },
   pl: {
     mySkills: "Moje Umiejętności",
@@ -139,7 +154,14 @@ const translations = {
     backHome: "Powrót do strony głównej",
     backToProjects: "Powrót do portfolio",
     related: "Powiązane projekty",
-    viewAll: "Zobacz wszystkie projekty"
+    viewAll: "Zobacz wszystkie projekty",
+    // Adding missing translation keys
+    getInTouch: "Kontakt",
+    contactDescription: "Skontaktuj się ze mną w sprawie współpracy lub po prostu przywitaj się",
+    contactInformation: "Informacje kontaktowe",
+    location: "Lokalizacja",
+    cinematography: "Kinematografia",
+    seo: "SEO"
   }
 };
 
