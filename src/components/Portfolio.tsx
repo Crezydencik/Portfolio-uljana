@@ -60,12 +60,12 @@ const Portfolio = () => {
               {/* Media type indicators */}
               <div className="absolute bottom-2 right-2 flex gap-2">
                 {project.mediaType && project.mediaType.includes('photo') && (
-                  <div className="bg-purple-600/80 text-white p-1 rounded-full">
+                  <div className="bg-purple-600/80 text-white p-1 rounded-full" title={t('photo')}>
                     <Image size={14} />
                   </div>
                 )}
                 {project.mediaType && project.mediaType.includes('video') && (
-                  <div className="bg-red-600/80 text-white p-1 rounded-full">
+                  <div className="bg-red-600/80 text-white p-1 rounded-full" title={t('video')}>
                     <Film size={14} />
                   </div>
                 )}

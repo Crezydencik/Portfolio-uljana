@@ -88,14 +88,14 @@ const translations: Translations = {
     backToProjects: "Back to Portfolio",
     related: "Related Projects",
     viewAll: "View All Projects",
-    getInTouch: "Get In Touch",
-    contactDescription: "Feel free to reach out for collaborations or just a friendly hello",
-    contactInformation: "Contact Information",
-    location: "Location",
+    followMe: "Follow Me",
     cinematography: "Cinematography",
     seo: "SEO",
     photo: "Photo",
-    video: "Video"
+    video: "Video",
+    footerTagline: "Content Creator & Digital Marketer",
+    allRightsReserved: "All rights reserved",
+    aboutMe: "About Me"
   },
   ru: {
     mySkills: "Мои Навыки",
@@ -175,14 +175,14 @@ const translations: Translations = {
     backToProjects: "Назад к портфолио",
     related: "Связанные проекты",
     viewAll: "Посмотреть все проекты",
-    getInTouch: "Обратная связь",
-    contactDescription: "Свяжитесь со мной для сотрудничества или просто поздороваться",
-    contactInformation: "Контактная информация",
-    location: "Местоположение",
+    followMe: "Подписывайтесь на меня",
     cinematography: "Операторская съемка",
     seo: "SEO-оптимизация",
     photo: "Фото",
-    video: "Видео"
+    video: "Видео",
+    footerTagline: "Создатель контента и цифровой маркетолог",
+    allRightsReserved: "Все права защищены",
+    aboutMe: "Обо мне"
   },
   pl: {
     mySkills: "Moje Umiejętności",
@@ -262,14 +262,14 @@ const translations: Translations = {
     backToProjects: "Powrót do portfolio",
     related: "Powiązane projekty",
     viewAll: "Zobacz wszystkie projekty",
-    getInTouch: "Kontakt",
-    contactDescription: "Skontaktuj się ze mną w sprawie współpracy lub po prostu przywitaj się",
-    contactInformation: "Informacje kontaktowe",
-    location: "Lokalizacja",
+    followMe: "Obserwuj mnie",
     cinematography: "Kinematografia",
     seo: "SEO",
     photo: "Zdjęcie",
-    video: "Wideo"
+    video: "Wideo",
+    footerTagline: "Twórca Treści & Marketer Cyfrowy",
+    allRightsReserved: "Wszelkie prawa zastrzeżone",
+    aboutMe: "O mnie"
   }
 };
 
