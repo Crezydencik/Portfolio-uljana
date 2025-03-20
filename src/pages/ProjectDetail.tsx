@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, User, Tag, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Tag, ExternalLink, Film, Image } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -16,6 +16,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "March 15, 2023",
     image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["photo"],
     content: `
       <p class="mb-4">This in-depth investigation into climate policies and their real-world impacts took over three months to complete. The project involved interviews with more than 30 experts, analysis of global climate data, and on-the-ground reporting from regions most affected by climate change.</p>
       
@@ -42,6 +43,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "November 8, 2022",
     image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["photo"],
     content: `
       <p class="mb-4">This six-month investigation into the hidden practices of major tech companies revealed concerning patterns of data usage, privacy violations, and labor practices that had previously escaped public scrutiny.</p>
       
@@ -66,6 +68,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "July 20, 2022",
     image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["video", "photo"],
     content: `
       <p class="mb-4">This documentary series explored the fascinating adaptations of wildlife in major metropolitan areas around the world. The project spanned four cities across three continents and documented over 30 species that have successfully adapted to urban environments.</p>
       
@@ -90,6 +93,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "April 12, 2023",
     image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["photo", "video"],
     content: `
       <p class="mb-4">This comprehensive marketing strategy was developed for GreenHome's launch of a new line of sustainable household products. The campaign positioned the products as both environmentally responsible and accessible to mainstream consumers.</p>
       
@@ -113,6 +117,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "February 3, 2023",
     image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["photo"],
     content: `<p>Detailed content about the healthcare reform investigation...</p>`,
     relatedProjects: ["climate-change-investigation", "tech-industry-expose"]
   },
@@ -123,6 +128,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "May 15, 2022",
     image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["video", "photo"],
     content: `<p>Detailed content about the travel series...</p>`,
     relatedProjects: ["urban-wildlife-documentary", "music-video-production"]
   },
@@ -133,6 +139,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "August 22, 2022",
     image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["video"],
     content: `<p>Detailed content about the music video production...</p>`,
     relatedProjects: ["urban-wildlife-documentary", "travel-series-hidden-gems"]
   },
@@ -143,6 +150,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "January 10, 2023",
     image: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["photo"],
     content: `<p>Detailed content about the non-profit awareness campaign...</p>`,
     relatedProjects: ["eco-friendly-product-launch", "restaurant-rebranding"]
   },
@@ -153,6 +161,7 @@ const projectsData = {
     author: "Anna Smith",
     date: "March 5, 2023",
     image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+    mediaType: ["photo"],
     content: `<p>Detailed content about the restaurant rebranding project...</p>`,
     relatedProjects: ["eco-friendly-product-launch", "non-profit-awareness-drive"]
   }
@@ -238,6 +247,18 @@ const ProjectDetail = () => {
                 <div className="flex items-center">
                   <Calendar size={14} className="mr-1" /> {project.date}
                 </div>
+                
+                {/* Media type badges */}
+                {project.mediaType && project.mediaType.includes('photo') && (
+                  <div className="flex items-center bg-purple-600/80 text-white px-2 py-1 rounded-full">
+                    <Image size={14} className="mr-1" /> Photo
+                  </div>
+                )}
+                {project.mediaType && project.mediaType.includes('video') && (
+                  <div className="flex items-center bg-red-600/80 text-white px-2 py-1 rounded-full">
+                    <Film size={14} className="mr-1" /> Video
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -268,6 +289,19 @@ const ProjectDetail = () => {
                             alt={relatedProject.title} 
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
+                          {/* Media type indicators */}
+                          <div className="absolute bottom-2 right-2 flex gap-2">
+                            {relatedProject.mediaType && relatedProject.mediaType.includes('photo') && (
+                              <div className="bg-purple-600/80 text-white p-1 rounded-full">
+                                <Image size={14} />
+                              </div>
+                            )}
+                            {relatedProject.mediaType && relatedProject.mediaType.includes('video') && (
+                              <div className="bg-red-600/80 text-white p-1 rounded-full">
+                                <Film size={14} />
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div className="p-4">
                           <h4 className="text-lg font-semibold mb-1">{relatedProject.title}</h4>

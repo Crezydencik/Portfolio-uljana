@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Film, Image } from 'lucide-react';
 
 const Portfolio = () => {
   const { t } = useTranslation();
@@ -13,24 +13,28 @@ const Portfolio = () => {
       title: 'Climate Change Investigation',
       category: 'Feature Article',
       image: 'https://images.unsplash.com/photo-1621184455862-c163dfb30e0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+      mediaType: ['photo']
     },
     {
       id: 'tech-industry-expose',
       title: 'Tech Industry Expose',
       category: 'Investigative',
       image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+      mediaType: ['photo']
     },
     {
       id: 'urban-wildlife-documentary',
       title: 'Urban Wildlife Documentary',
       category: 'Documentary',
       image: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+      mediaType: ['video', 'photo']
     },
     {
       id: 'eco-friendly-product-launch',
       title: 'Eco-Friendly Product Launch',
       category: 'Campaign',
       image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+      mediaType: ['photo', 'video']
     },
   ];
 
@@ -53,6 +57,19 @@ const Portfolio = () => {
                 className="w-full aspect-video object-cover"
                 loading="lazy"
               />
+              {/* Media type indicators */}
+              <div className="absolute bottom-2 right-2 flex gap-2">
+                {project.mediaType && project.mediaType.includes('photo') && (
+                  <div className="bg-purple-600/80 text-white p-1 rounded-full">
+                    <Image size={14} />
+                  </div>
+                )}
+                {project.mediaType && project.mediaType.includes('video') && (
+                  <div className="bg-red-600/80 text-white p-1 rounded-full">
+                    <Film size={14} />
+                  </div>
+                )}
+              </div>
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Link 
                   to={`/project/${project.id}`} 
