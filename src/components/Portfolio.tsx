@@ -57,15 +57,15 @@ const Portfolio = () => {
                 className="w-full aspect-video object-cover"
                 loading="lazy"
               />
-              {/* Media type indicators */}
+              {/* Media type indicators with better visibility */}
               <div className="absolute bottom-2 right-2 flex gap-2">
                 {project.mediaType && project.mediaType.includes('photo') && (
-                  <div className="bg-purple-600/80 text-white p-1 rounded-full" title={t('photo')}>
+                  <div className="bg-purple-600 text-white p-1.5 rounded-full" title={t('photo')}>
                     <Image size={14} />
                   </div>
                 )}
                 {project.mediaType && project.mediaType.includes('video') && (
-                  <div className="bg-red-600/80 text-white p-1 rounded-full" title={t('video')}>
+                  <div className="bg-red-600 text-white p-1.5 rounded-full" title={t('video')}>
                     <Film size={14} />
                   </div>
                 )}
@@ -82,12 +82,28 @@ const Portfolio = () => {
             <div className="p-6">
               <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
               <p className="text-gray-600 mb-4">{project.category}</p>
-              <Link 
-                to={`/project/${project.id}`} 
-                className="text-portfolio-black font-medium inline-flex items-center border-b border-transparent hover:border-portfolio-black"
-              >
-                View Project <ExternalLink size={14} className="ml-1" />
-              </Link>
+              <div className="flex justify-between items-center">
+                <Link 
+                  to={`/project/${project.id}`} 
+                  className="text-portfolio-black font-medium inline-flex items-center border-b border-transparent hover:border-portfolio-black"
+                >
+                  View Project <ExternalLink size={14} className="ml-1" />
+                </Link>
+                
+                {/* Small media type indicators for card footer */}
+                <div className="flex gap-2">
+                  {project.mediaType && project.mediaType.includes('photo') && (
+                    <div className="text-purple-600" title={t('photo')}>
+                      <Image size={16} />
+                    </div>
+                  )}
+                  {project.mediaType && project.mediaType.includes('video') && (
+                    <div className="text-red-600" title={t('video')}>
+                      <Film size={16} />
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         ))}

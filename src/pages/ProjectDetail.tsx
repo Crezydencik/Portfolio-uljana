@@ -248,15 +248,15 @@ const ProjectDetail = () => {
                   <Calendar size={14} className="mr-1" /> {project.date}
                 </div>
                 
-                {/* Media type badges */}
+                {/* Media type badges - improved with better visibility */}
                 {project.mediaType && project.mediaType.includes('photo') && (
-                  <div className="flex items-center bg-purple-600/80 text-white px-2 py-1 rounded-full">
-                    <Image size={14} className="mr-1" /> Photo
+                  <div className="flex items-center bg-purple-600 text-white px-3 py-1 rounded-full">
+                    <Image size={14} className="mr-2" /> {t('photo')}
                   </div>
                 )}
                 {project.mediaType && project.mediaType.includes('video') && (
-                  <div className="flex items-center bg-red-600/80 text-white px-2 py-1 rounded-full">
-                    <Film size={14} className="mr-1" /> Video
+                  <div className="flex items-center bg-red-600 text-white px-3 py-1 rounded-full">
+                    <Film size={14} className="mr-2" /> {t('video')}
                   </div>
                 )}
               </div>
@@ -266,6 +266,39 @@ const ProjectDetail = () => {
         
         {/* Content section */}
         <div className="container max-w-4xl mx-auto px-4 py-12">
+          {/* If there's video content, display a video section */}
+          {project.mediaType && project.mediaType.includes('video') && (
+            <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
+              <h3 className="text-xl font-semibold mb-4 flex items-center">
+                <Film className="mr-2 text-red-600" size={20} /> {t('video')}
+              </h3>
+              <div className="aspect-video bg-gray-200 flex items-center justify-center rounded-lg">
+                {/* Placeholder for video content - in a real app, you would embed actual video here */}
+                <div className="text-center p-8">
+                  <Film size={48} className="mx-auto mb-4 text-gray-400" />
+                  <p className="text-gray-500">{t('video')} {t('content')}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* If there's photo content, display a photo section */}
+          {project.mediaType && project.mediaType.includes('photo') && (
+            <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
+              <h3 className="text-xl font-semibold mb-4 flex items-center">
+                <Image className="mr-2 text-purple-600" size={20} /> {t('photo')}
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {/* Placeholder for photo content - in a real app, you would display actual gallery here */}
+                {[1, 2, 3].map((item) => (
+                  <div key={item} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
+                    <Image size={32} className="text-gray-400" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: project.content }}></div>
           
           {/* Related projects */}
@@ -289,15 +322,15 @@ const ProjectDetail = () => {
                             alt={relatedProject.title} 
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
-                          {/* Media type indicators */}
+                          {/* Media type indicators with improved visibility */}
                           <div className="absolute bottom-2 right-2 flex gap-2">
                             {relatedProject.mediaType && relatedProject.mediaType.includes('photo') && (
-                              <div className="bg-purple-600/80 text-white p-1 rounded-full">
+                              <div className="bg-purple-600 text-white p-1.5 rounded-full" title={t('photo')}>
                                 <Image size={14} />
                               </div>
                             )}
                             {relatedProject.mediaType && relatedProject.mediaType.includes('video') && (
-                              <div className="bg-red-600/80 text-white p-1 rounded-full">
+                              <div className="bg-red-600 text-white p-1.5 rounded-full" title={t('video')}>
                                 <Film size={14} />
                               </div>
                             )}
