@@ -1,7 +1,8 @@
 
 import { createContext, useContext } from 'react';
-import { Language } from '@/i18n/i18n-config';
-import { useI18n } from 'next-international';
+
+// Define Language type directly instead of importing from next-international
+export type Language = 'en' | 'ru' | 'pl';
 
 type TranslationKey = 
   | 'notFound'
@@ -48,7 +49,10 @@ type TranslationKey =
   | 'analytics'
   | 'mySkills'
   | 'skillsDescription'
-  | 'aboutMe';
+  | 'aboutMe'
+  | 'footerTagline'
+  | 'allRightsReserved'
+  | 'certificates';
 
 type TranslationContextType = {
   t: (key: TranslationKey) => string;
@@ -111,7 +115,10 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     analytics: "Analytics",
     mySkills: "My Skills",
     skillsDescription: "Here are some of the skills I've developed over the years.",
-    aboutMe: "About Me"
+    aboutMe: "About Me",
+    footerTagline: "Journalist, Video Producer & Marketing Professional",
+    allRightsReserved: "All Rights Reserved",
+    certificates: "Certificates"
   },
   ru: {
     notFound: "Страница не найдена",
@@ -158,7 +165,10 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     analytics: "Аналитика",
     mySkills: "Мои навыки",
     skillsDescription: "Вот некоторые из навыков, которые я развил за эти годы.",
-    aboutMe: "Обо мне"
+    aboutMe: "Обо мне",
+    footerTagline: "Журналист, Видеопродюсер и Маркетолог",
+    allRightsReserved: "Все права защищены",
+    certificates: "Сертификаты"
   },
   pl: {
     notFound: "Strona nie znaleziona",
@@ -205,7 +215,10 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     analytics: "Analityka",
     mySkills: "Moje umiejętności",
     skillsDescription: "Oto niektóre z umiejętności, które rozwinąłem na przestrzeni lat.",
-    aboutMe: "O mnie"
+    aboutMe: "O mnie",
+    footerTagline: "Dziennikarz, Producent Wideo i Specjalista ds. Marketingu",
+    allRightsReserved: "Wszelkie prawa zastrzeżone",
+    certificates: "Certyfikaty"
   }
 };
 

@@ -1,7 +1,7 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, User, Tag, ExternalLink, Film, Image } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Tag, ExternalLink, Film, Image, Play } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -17,6 +17,11 @@ const projectsData = {
     date: "March 15, 2023",
     image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["photo"],
+    photos: [
+      "https://images.unsplash.com/photo-1592210454359-9043f067919b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1565118531796-763e5082d113?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
+    ],
     content: `
       <p class="mb-4">This in-depth investigation into climate policies and their real-world impacts took over three months to complete. The project involved interviews with more than 30 experts, analysis of global climate data, and on-the-ground reporting from regions most affected by climate change.</p>
       
@@ -44,6 +49,11 @@ const projectsData = {
     date: "November 8, 2022",
     image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["photo"],
+    photos: [
+      "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
+    ],
     content: `
       <p class="mb-4">This six-month investigation into the hidden practices of major tech companies revealed concerning patterns of data usage, privacy violations, and labor practices that had previously escaped public scrutiny.</p>
       
@@ -69,6 +79,23 @@ const projectsData = {
     date: "July 20, 2022",
     image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["video", "photo"],
+    photos: [
+      "https://images.unsplash.com/photo-1503656142023-618e7d1f435a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1485594050903-8e8ee7b3eccb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
+    ],
+    videos: [
+      {
+        thumbnail: "https://images.unsplash.com/photo-1554248973-94ea21a2f3d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+        title: "Fox in the City",
+        duration: "3:42"
+      },
+      {
+        thumbnail: "https://images.unsplash.com/photo-1574068468668-a05a11f871da?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+        title: "Raccoons at Night",
+        duration: "2:55"
+      }
+    ],
     content: `
       <p class="mb-4">This documentary series explored the fascinating adaptations of wildlife in major metropolitan areas around the world. The project spanned four cities across three continents and documented over 30 species that have successfully adapted to urban environments.</p>
       
@@ -94,6 +121,23 @@ const projectsData = {
     date: "April 12, 2023",
     image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["photo", "video"],
+    photos: [
+      "https://images.unsplash.com/photo-1513135467880-9ffd734e4c6e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1532635241-17e820acc59f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
+    ],
+    videos: [
+      {
+        thumbnail: "https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+        title: "Campaign Launch Video",
+        duration: "1:45"
+      },
+      {
+        thumbnail: "https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+        title: "Product Demo",
+        duration: "2:30"
+      }
+    ],
     content: `
       <p class="mb-4">This comprehensive marketing strategy was developed for GreenHome's launch of a new line of sustainable household products. The campaign positioned the products as both environmentally responsible and accessible to mainstream consumers.</p>
       
@@ -118,6 +162,11 @@ const projectsData = {
     date: "February 3, 2023",
     image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["photo"],
+    photos: [
+      "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1504813184591-01572f98c85f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
+    ],
     content: `<p>Detailed content about the healthcare reform investigation...</p>`,
     relatedProjects: ["climate-change-investigation", "tech-industry-expose"]
   },
@@ -129,6 +178,23 @@ const projectsData = {
     date: "May 15, 2022",
     image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["video", "photo"],
+    photos: [
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
+    ],
+    videos: [
+      {
+        thumbnail: "https://images.unsplash.com/photo-1526495124232-a04e1849168c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+        title: "Hidden Beach of Indonesia",
+        duration: "4:15"
+      },
+      {
+        thumbnail: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+        title: "Mountain Village Tour",
+        duration: "5:28"
+      }
+    ],
     content: `<p>Detailed content about the travel series...</p>`,
     relatedProjects: ["urban-wildlife-documentary", "music-video-production"]
   },
@@ -140,6 +206,18 @@ const projectsData = {
     date: "August 22, 2022",
     image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["video"],
+    videos: [
+      {
+        thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+        title: "Acoustic Session",
+        duration: "3:42"
+      },
+      {
+        thumbnail: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+        title: "Studio Recording",
+        duration: "4:10"
+      }
+    ],
     content: `<p>Detailed content about the music video production...</p>`,
     relatedProjects: ["urban-wildlife-documentary", "travel-series-hidden-gems"]
   },
@@ -151,6 +229,11 @@ const projectsData = {
     date: "January 10, 2023",
     image: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["photo"],
+    photos: [
+      "https://images.unsplash.com/photo-1469571486292-b5dd2a8881a5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1523296009450-b35232956782?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
+    ],
     content: `<p>Detailed content about the non-profit awareness campaign...</p>`,
     relatedProjects: ["eco-friendly-product-launch", "restaurant-rebranding"]
   },
@@ -162,6 +245,11 @@ const projectsData = {
     date: "March 5, 2023",
     image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
     mediaType: ["photo"],
+    photos: [
+      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
+    ],
     content: `<p>Detailed content about the restaurant rebranding project...</p>`,
     relatedProjects: ["eco-friendly-product-launch", "non-profit-awareness-drive"]
   }
@@ -171,6 +259,7 @@ const ProjectDetail = () => {
   const { id } = useParams<{id: string}>();
   const { t } = useTranslation();
   const project = id ? projectsData[id as keyof typeof projectsData] : undefined;
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
   useEffect(() => {
     // Scroll to top when the component mounts
@@ -201,6 +290,11 @@ const ProjectDetail = () => {
       window.removeEventListener('scroll', animateOnScroll);
     };
   }, []);
+
+  // Reset active photo index when project changes
+  useEffect(() => {
+    setActivePhotoIndex(0);
+  }, [id]);
 
   if (!project) {
     return (
@@ -267,32 +361,73 @@ const ProjectDetail = () => {
         {/* Content section */}
         <div className="container max-w-4xl mx-auto px-4 py-12">
           {/* If there's video content, display a video section */}
-          {project.mediaType && project.mediaType.includes('video') && (
+          {project.mediaType && project.mediaType.includes('video') && project.videos && (
             <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
               <h3 className="text-xl font-semibold mb-4 flex items-center">
                 <Film className="mr-2 text-red-600" size={20} /> {t('video')}
               </h3>
-              <div className="aspect-video bg-gray-200 flex items-center justify-center rounded-lg">
-                {/* Placeholder for video content - in a real app, you would embed actual video here */}
-                <div className="text-center p-8">
-                  <Film size={48} className="mx-auto mb-4 text-gray-400" />
-                  <p className="text-gray-500">{t('video')} {t('content')}</p>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {project.videos.map((video, index) => (
+                  <div key={index} className="group relative overflow-hidden rounded-lg aspect-video bg-gray-900">
+                    <img 
+                      src={video.thumbnail} 
+                      alt={video.title} 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90"
+                    />
+                    <div className="absolute inset-0 flex flex-col justify-between p-4">
+                      <div className="flex justify-end">
+                        <span className="bg-black/70 text-white px-2 py-1 rounded text-xs">
+                          {video.duration}
+                        </span>
+                      </div>
+                      <div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="rounded-full bg-red-600/90 p-4 flex items-center justify-center group-hover:bg-red-700 transition-colors">
+                            <Play fill="white" className="text-white" size={24} />
+                          </div>
+                        </div>
+                        <h4 className="text-white text-lg font-medium relative z-10 mt-auto">
+                          {video.title}
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
           
           {/* If there's photo content, display a photo section */}
-          {project.mediaType && project.mediaType.includes('photo') && (
+          {project.mediaType && project.mediaType.includes('photo') && project.photos && (
             <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
               <h3 className="text-xl font-semibold mb-4 flex items-center">
                 <Image className="mr-2 text-purple-600" size={20} /> {t('photo')}
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {/* Placeholder for photo content - in a real app, you would display actual gallery here */}
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
-                    <Image size={32} className="text-gray-400" />
+              
+              {/* Main large photo */}
+              <div className="mb-4 aspect-[16/9] overflow-hidden rounded-lg">
+                <img 
+                  src={project.photos[activePhotoIndex]} 
+                  alt={`${project.title} - photo ${activePhotoIndex + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Thumbnail navigation */}
+              <div className="grid grid-cols-3 gap-4">
+                {project.photos.map((photo, index) => (
+                  <div 
+                    key={index} 
+                    className={`aspect-square rounded-lg overflow-hidden cursor-pointer transition-all ${
+                      index === activePhotoIndex ? 'ring-4 ring-purple-600' : 'opacity-75 hover:opacity-100'
+                    }`}
+                    onClick={() => setActivePhotoIndex(index)}
+                  >
+                    <img 
+                      src={photo} 
+                      alt={`${project.title} - thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 ))}
               </div>
