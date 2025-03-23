@@ -14,7 +14,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <TranslationProvider>
+      <TranslationProvider language="en">
         <Toaster />
         <Sonner />
         <BrowserRouter>

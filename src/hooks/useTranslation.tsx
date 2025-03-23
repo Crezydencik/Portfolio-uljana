@@ -1,3 +1,4 @@
+
 import { createContext, useContext } from 'react';
 import { Language } from '@/i18n/i18n-config';
 import { useI18n } from 'next-international';
@@ -25,7 +26,29 @@ type TranslationKey =
   | 'send'
   | 'formSuccess'
   | 'formError'
-  | 'name';
+  | 'name'
+  | 'getInTouch'
+  | 'contactDescription'
+  | 'contactInformation'
+  | 'phone'
+  | 'location'
+  | 'followMe'
+  | 'journalism'
+  | 'newsWriting'
+  | 'interviewing'
+  | 'research'
+  | 'storytelling'
+  | 'videoEditing'
+  | 'adobePremiere'
+  | 'cinematography'
+  | 'marketing'
+  | 'contentStrategy'
+  | 'socialMedia'
+  | 'seo'
+  | 'analytics'
+  | 'mySkills'
+  | 'skillsDescription'
+  | 'aboutMe';
 
 type TranslationContextType = {
   t: (key: TranslationKey) => string;
@@ -66,7 +89,29 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     send: "Send",
     formSuccess: "Your message has been sent!",
     formError: "There was an error sending your message. Please try again.",
-    name: "Name"
+    name: "Name",
+    getInTouch: "Get in Touch",
+    contactDescription: "Feel free to reach out with any questions or opportunities.",
+    contactInformation: "Contact Information",
+    phone: "Phone",
+    location: "Location",
+    followMe: "Follow Me",
+    journalism: "Journalism",
+    newsWriting: "News Writing",
+    interviewing: "Interviewing",
+    research: "Research",
+    storytelling: "Storytelling",
+    videoEditing: "Video Editing",
+    adobePremiere: "Adobe Premiere",
+    cinematography: "Cinematography",
+    marketing: "Marketing",
+    contentStrategy: "Content Strategy",
+    socialMedia: "Social Media",
+    seo: "SEO",
+    analytics: "Analytics",
+    mySkills: "My Skills",
+    skillsDescription: "Here are some of the skills I've developed over the years.",
+    aboutMe: "About Me"
   },
   ru: {
     notFound: "Страница не найдена",
@@ -91,7 +136,29 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     send: "Отправить",
     formSuccess: "Ваше сообщение отправлено!",
     formError: "Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте еще раз.",
-    name: "Имя"
+    name: "Имя",
+    getInTouch: "Свяжитесь со мной",
+    contactDescription: "Не стесняйтесь обращаться с любыми вопросами или предложениями.",
+    contactInformation: "Контактная информация",
+    phone: "Телефон",
+    location: "Местоположение",
+    followMe: "Подписывайтесь",
+    journalism: "Журналистика",
+    newsWriting: "Написание новостей",
+    interviewing: "Интервьюирование",
+    research: "Исследования",
+    storytelling: "Рассказывание историй",
+    videoEditing: "Видеомонтаж",
+    adobePremiere: "Adobe Premiere",
+    cinematography: "Кинематография",
+    marketing: "Маркетинг",
+    contentStrategy: "Контент-стратегия",
+    socialMedia: "Социальные сети",
+    seo: "SEO",
+    analytics: "Аналитика",
+    mySkills: "Мои навыки",
+    skillsDescription: "Вот некоторые из навыков, которые я развил за эти годы.",
+    aboutMe: "Обо мне"
   },
   pl: {
     notFound: "Strona nie znaleziona",
@@ -116,7 +183,29 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     send: "Wyślij",
     formSuccess: "Twoja wiadomość została wysłana!",
     formError: "Wystąpił błąd podczas wysyłania wiadomości. Proszę spróbować ponownie.",
-    name: "Imię"
+    name: "Imię",
+    getInTouch: "Skontaktuj się",
+    contactDescription: "Zapraszam do kontaktu w sprawie pytań lub możliwości współpracy.",
+    contactInformation: "Informacje kontaktowe",
+    phone: "Telefon",
+    location: "Lokalizacja",
+    followMe: "Obserwuj mnie",
+    journalism: "Dziennikarstwo",
+    newsWriting: "Pisanie wiadomości",
+    interviewing: "Przeprowadzanie wywiadów",
+    research: "Badania",
+    storytelling: "Opowiadanie historii",
+    videoEditing: "Montaż wideo",
+    adobePremiere: "Adobe Premiere",
+    cinematography: "Kinematografia",
+    marketing: "Marketing",
+    contentStrategy: "Strategia treści",
+    socialMedia: "Media społecznościowe",
+    seo: "SEO",
+    analytics: "Analityka",
+    mySkills: "Moje umiejętności",
+    skillsDescription: "Oto niektóre z umiejętności, które rozwinąłem na przestrzeni lat.",
+    aboutMe: "O mnie"
   }
 };
 
