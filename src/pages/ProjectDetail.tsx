@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
@@ -65,11 +64,17 @@ const ProjectDetail = () => {
     );
   }
 
-  // Get related projects data
+  // Get related projects data with proper type safety
   const relatedProjectsData: Project[] = project.relatedProjects 
     ? project.relatedProjects
-        .map(relatedId => projectsData[relatedId as keyof typeof projectsData])
-        .filter(Boolean) 
+        .map(relatedId => {
+          // Ensure the related project ID exists in the projects data
+          if (relatedId in projectsData) {
+            return projectsData[relatedId];
+          }
+          return null;
+        })
+        .filter((project): project is Project => project !== null) 
     : [];
 
   return (
@@ -89,12 +94,12 @@ const ProjectDetail = () => {
         {/* Content section */}
         <div className="container max-w-4xl mx-auto px-4 py-12">
           {/* If there's video content, display a video section */}
-          {project.mediaType && project.mediaType.includes('video') && 'videos' in project && project.videos && (
+          {project.mediaType && project.mediaType.includes('video') && project.videos && (
             <ProjectVideo videos={project.videos} />
           )}
           
           {/* If there's photo content, display a photo section */}
-          {project.mediaType && project.mediaType.includes('photo') && 'photos' in project && project.photos && (
+          {project.mediaType && project.mediaType.includes('photo') && project.photos && (
             <ProjectPhoto photos={project.photos} title={project.title} />
           )}
           

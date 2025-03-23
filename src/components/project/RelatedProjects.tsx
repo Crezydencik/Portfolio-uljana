@@ -3,15 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Film, Image } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
-
-// Define the Project type
-interface Project {
-  id: string;
-  title: string;
-  category: string;
-  image: string;
-  mediaType?: string[];
-}
+import { Project } from '@/types/project';
 
 interface RelatedProjectsProps {
   relatedProjects: Project[];
