@@ -28,20 +28,6 @@ institution: 'Kurier Akademicki',
 year: '2024',
 description: 'Editorial board member responsible for writing scripts, conducting interviews, and editing journalistic materials.'
 },
-{
-id: 4,
-title: 'Data Journalism',
-institution: 'Knight Center for Journalism',
-year: '2019',
-description: 'Certification in data analysis and visualization for journalism.'
-},
-{
-id: 5,
-title: 'Multimedia Storytelling',
-institution: 'Reuters Journalism Program',
-year: '2021',
-description: 'Advanced techniques for creating compelling narratives across multiple platforms.'
-}
 ]
   ;
 

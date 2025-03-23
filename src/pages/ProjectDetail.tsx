@@ -94,6 +94,9 @@ const ProjectDetail = () => {
         {/* Content section */}
         <div className="container max-w-4xl mx-auto px-4 py-12">
           {/* If there's video content, display a video section */}
+          
+          <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: project.content }}></div>
+          
           {project.mediaType && project.mediaType.includes('video') && project.videos && (
             <ProjectVideo videos={project.videos} />
           )}
@@ -102,9 +105,6 @@ const ProjectDetail = () => {
           {project.mediaType && project.mediaType.includes('photo') && project.photos && (
             <ProjectPhoto photos={project.photos} title={project.title} />
           )}
-          
-          <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: project.content }}></div>
-          
           {/* Related projects */}
           {relatedProjectsData.length > 0 && (
             <RelatedProjects relatedProjects={relatedProjectsData} />
@@ -114,7 +114,7 @@ const ProjectDetail = () => {
             <Link 
               to="/#portfolio" 
               className="portfolio-button inline-flex items-center"
-            >
+              >
               {t('viewAll')} <ExternalLink size={16} className="ml-2" />
             </Link>
           </div>
