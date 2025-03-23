@@ -361,13 +361,13 @@ const ProjectDetail = () => {
         {/* Content section */}
         <div className="container max-w-4xl mx-auto px-4 py-12">
           {/* If there's video content, display a video section */}
-          {project.mediaType && project.mediaType.includes('video') && project.videos && (
+          {project.mediaType && project.mediaType.includes('video') && 'videos' in project && project.videos && (
             <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
               <h3 className="text-xl font-semibold mb-4 flex items-center">
                 <Film className="mr-2 text-red-600" size={20} /> {t('video')}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {project.videos.map((video, index) => (
+                {'videos' in project && project.videos.map((video, index) => (
                   <div key={index} className="group relative overflow-hidden rounded-lg aspect-video bg-gray-900">
                     <img 
                       src={video.thumbnail} 
@@ -398,7 +398,7 @@ const ProjectDetail = () => {
           )}
           
           {/* If there's photo content, display a photo section */}
-          {project.mediaType && project.mediaType.includes('photo') && project.photos && (
+          {project.mediaType && project.mediaType.includes('photo') && 'photos' in project && project.photos && (
             <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
               <h3 className="text-xl font-semibold mb-4 flex items-center">
                 <Image className="mr-2 text-purple-600" size={20} /> {t('photo')}
@@ -407,7 +407,7 @@ const ProjectDetail = () => {
               {/* Main large photo */}
               <div className="mb-4 aspect-[16/9] overflow-hidden rounded-lg">
                 <img 
-                  src={project.photos[activePhotoIndex]} 
+                  src={'photos' in project ? project.photos[activePhotoIndex] : ''}
                   alt={`${project.title} - photo ${activePhotoIndex + 1}`}
                   className="w-full h-full object-cover"
                 />
@@ -415,7 +415,7 @@ const ProjectDetail = () => {
               
               {/* Thumbnail navigation */}
               <div className="grid grid-cols-3 gap-4">
-                {project.photos.map((photo, index) => (
+                {'photos' in project && project.photos.map((photo, index) => (
                   <div 
                     key={index} 
                     className={`aspect-square rounded-lg overflow-hidden cursor-pointer transition-all ${
@@ -499,3 +499,4 @@ const ProjectDetail = () => {
 };
 
 export default ProjectDetail;
+

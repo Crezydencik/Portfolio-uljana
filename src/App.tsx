@@ -7,14 +7,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import ProjectDetail from "./pages/ProjectDetail";
 import NotFound from "./pages/NotFound";
-import { TranslationProvider, Language } from "./hooks/useTranslation";
+import { TranslationProvider } from "./hooks/useTranslation";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <TranslationProvider language="en">
+      <TranslationProvider language="ru">
         <Toaster />
         <Sonner />
         <BrowserRouter>
