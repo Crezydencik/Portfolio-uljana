@@ -9,33 +9,33 @@ const Portfolio = () => {
 
   const projects = [
     {
-      id: 'climate-change-investigation',
-      title: 'Climate Change Investigation',
-      category: 'Feature Article',
-      image: 'https://images.unsplash.com/photo-1621184455862-c163dfb30e0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+      id: 'kanken-and-vlog',
+      title: 'Kanken and vlog',
+      category: 'Editors',
+      image: '/projeck/kanken/kanken-photo.png',
       mediaType: ['photo']
     },
-    {
-      id: 'tech-industry-expose',
-      title: 'Tech Industry Expose',
-      category: 'Investigative',
-      image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
-      mediaType: ['photo']
-    },
-    {
-      id: 'urban-wildlife-documentary',
-      title: 'Urban Wildlife Documentary',
-      category: 'Documentary',
-      image: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
-      mediaType: ['video', 'photo']
-    },
-    {
-      id: 'eco-friendly-product-launch',
-      title: 'Eco-Friendly Product Launch',
-      category: 'Campaign',
-      image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
-      mediaType: ['photo', 'video']
-    },
+    // {
+    //   id: 'tech-industry-expose',
+    //   title: 'Tech Industry Expose',
+    //   category: 'Investigative',
+    //   image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+    //   mediaType: ['photo']
+    // },
+    // {
+    //   id: 'urban-wildlife-documentary',
+    //   title: 'Urban Wildlife Documentary',
+    //   category: 'Documentary',
+    //   image: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+    //   mediaType: ['video', 'photo']
+    // },
+    // {
+    //   id: 'eco-friendly-product-launch',
+    //   title: 'Eco-Friendly Product Launch',
+    //   category: 'Campaign',
+    //   image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+    //   mediaType: ['photo', 'video']
+    // },
   ];
 
   return (

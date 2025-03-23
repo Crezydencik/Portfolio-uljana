@@ -88,7 +88,7 @@ const ProjectDetail = () => {
           author={project.author}
           date={project.date}
           image={project.image}
-          mediaType={project.mediaType}
+
         />
         
         {/* Content section */}

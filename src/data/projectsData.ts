@@ -4,37 +4,23 @@ import { ProjectsData } from "../types/project";
 // Sample project data (in a real app this would come from an API or database)
 const projectsData: ProjectsData = {
   // Journalism projects
-  "climate-change-investigation": {
-    id: "climate-change-investigation",
-    title: "Climate Change Investigation",
-    category: "Feature Article",
-    author: "Anna Smith",
-    date: "March 15, 2023",
-    image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
-    mediaType: ["photo"],
-    photos: [
-      "https://images.unsplash.com/photo-1592210454359-9043f067919b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1565118531796-763e5082d113?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
-    ],
+  "kanken-and-vlog": {
+    id: "kanken-and-vlog",
+    title: "Kanken and vlog",
+    category: "",
+    author: "",
+    date: "",
+    image: "/projeck/kanken/kanken-photo.png",
+    mediaType: ["video"],
     content: `
-      <p class="mb-4">This in-depth investigation into climate policies and their real-world impacts took over three months to complete. The project involved interviews with more than 30 experts, analysis of global climate data, and on-the-ground reporting from regions most affected by climate change.</p>
-      
-      <h3 class="text-xl font-semibold mb-3">Research Methodology</h3>
-      <p class="mb-4">Our team collected temperature and precipitation data spanning five decades across 20 countries. We cross-referenced this information with policy implementation timelines to identify correlations between regulatory changes and environmental outcomes.</p>
-      
-      <p class="mb-4">One of the key findings revealed a significant disparity between stated policy goals and real-world implementation in developing nations, largely due to economic constraints and competing priorities.</p>
-      
-      <h3 class="text-xl font-semibold mb-3">Key Insights</h3>
-      <ul class="list-disc pl-5 mb-4 space-y-2">
-        <li>Carbon emissions have decreased in countries with strict enforcement mechanisms, even when overall policy ambition is moderate.</li>
-        <li>Public awareness campaigns have shown measurable impact on consumer behavior in urban centers but limited effect in rural communities.</li>
-        <li>Economic incentives for renewable energy adoption have outperformed regulatory mandates in driving industrial change.</li>
-      </ul>
-      
-      <p class="mb-4">The investigation was published as a six-part series in The Global Observer and received the Environmental Reporting Award from the International Journalism Association.</p>
-    `,
-    relatedProjects: ["tech-industry-expose", "healthcare-reform"]
+      <p class="mb-4">The script, idea, and main editing of these two videos were created by me during my studies at the university. The first video, <strong>"Kanken"</strong>, is an advertising video for the brand featuring students in the leading roles. The second video, <strong>"Be Grateful"</strong>, was created with an educational and social purpose—to convey how important it is to appreciate the smallest moments in our lives.</p>
+
+<h3 class="text-xl font-semibold mb-3">DADISH</h3>
+<p class="mb-4">This video was edited by me from scratch on YouTube for my university teacher. Various trending elements, sounds, inserts, and cuts that are especially popular on YouTube were added to enhance viewer engagement.</p>
+
+<h3 class="text-xl font-semibold mb-3">SAMOLOTY</h3>
+<p class="mb-4">The main idea behind this video was to showcase the beauty and power of different types of airplanes, including crop dusters. The goal was to convey their energy and the atmosphere of each new location, capturing the forces of nature. Both the editing and sound processing were entirely handled by me.</p>
+`,
   },
   "tech-industry-expose": {
     id: "tech-industry-expose",

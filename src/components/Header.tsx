@@ -44,7 +44,7 @@ const Header = () => {
       <div className="container max-w-6xl mx-auto px-4 flex items-center justify-between">
         <div className="flex items-center">
           <a 
-            href="#" 
+            href="/" 
             className="text-xl md:text-2xl font-display font-bold relativi"
           >
             <span className="text-portfolio-black">Ulyana</span>
