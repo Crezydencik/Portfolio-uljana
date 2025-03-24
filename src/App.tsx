@@ -13,6 +13,9 @@ import Login from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProjectEdit from "./pages/admin/AdminProjectEdit";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminCertificates from "./pages/admin/AdminCertificates";
+import AdminAuthorInfo from "./pages/admin/AdminAuthorInfo";
+import AdminContact from "./pages/admin/AdminContact";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +46,21 @@ const App = () => (
               <Route path="/admin/project/new" element={
                 <ProtectedRoute>
                   <AdminProjectEdit />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/certificates" element={
+                <ProtectedRoute>
+                  <AdminCertificates />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/author-info" element={
+                <ProtectedRoute>
+                  <AdminAuthorInfo />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/contact" element={
+                <ProtectedRoute>
+                  <AdminContact />
                 </ProtectedRoute>
               } />
               

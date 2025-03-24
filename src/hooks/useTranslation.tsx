@@ -1,376 +1,479 @@
+
 import { createContext, useContext, useState, useEffect } from 'react';
 
 // Define Language type directly instead of importing from next-international
-export type Language = 'en' | 'ru' | 'pl';
+type Language = 'en' | 'ru' | 'pl';
 
-type TranslationKey = 
+// Context to store the current language and translation functions
+type TranslationContextType = {
+  t: (key: TranslationKey) => string;
+  lang: Language;
+  setLang: (lang: Language) => void;
+  toggleLang: () => void;
+  allLangs: Language[];
+};
+
+// Our translations context
+const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+
+// Type for all possible translation keys
+export type TranslationKey = 
   | 'notFound'
-  | 'projectNotFoundMessage'
-  | 'backHome'
-  | 'backToProjects'
-  | 'viewAll'
-  | 'related'
-  | 'photo'
-  | 'video'
-  | 'content'
+  | 'backToHome'
+  | 'notFoundMessage'
   | 'home'
   | 'about'
+  | 'skills'
   | 'portfolio'
   | 'contact'
-  | 'hello'
-  | 'description'
-  | 'resume'
-  | 'email'
-  | 'subject'
-  | 'message'
-  | 'send'
-  | 'formSuccess'
-  | 'formError'
-  | 'name'
+  | 'certificates'
+  | 'downloadCV'
+  | 'viewAllProjects'
+  | 'viewProject'
+  | 'allProjects'
+  | 'photoProjects'
+  | 'videoProjects'
+  | 'designProjects'
+  | 'projectDetails'
+  | 'client'
+  | 'date'
+  | 'category'
+  | 'brief'
+  | 'viewWebsite'
+  | 'relatedProjects'
+  | 'aboutMe'
   | 'getInTouch'
   | 'contactDescription'
   | 'contactInformation'
+  | 'email'
   | 'phone'
   | 'location'
   | 'followMe'
-  | 'journalism'
-  | 'newsWriting'
-  | 'interviewing'
-  | 'research'
-  | 'storytelling'
-  | 'videoEditing'
-  | 'adobePremiere'
-  | 'cinematography'
-  | 'marketing'
-  | 'contentStrategy'
-  | 'socialMedia'
-  | 'seo'
-  | 'analytics'
-  | 'mySkills'
-  | 'skillsDescription'
-  | 'aboutMe'
-  | 'footerTagline'
-  | 'allRightsReserved'
-  | 'certificates'
-  | 'admin'
-  | 'login'
+  | 'loginToAdmin'
+  | 'username'
   | 'password'
   | 'signIn'
   | 'signOut'
-  | 'adminPanel'
-  | 'editProject'
-  | 'deleteProject'
-  | 'addProject'
-  | 'save'
-  | 'cancel'
-  | 'title'
-  | 'category'
-  | 'author'
-  | 'date'
-  | 'image'
-  | 'addPhoto'
-  | 'addVideo'
-  | 'thumbnailUrl'
-  | 'duration'
-  | 'videoTitle'
-  | 'projectContent'
-  | 'relatedProjects'
   | 'projectId'
+  | 'title'
+  | 'content'
+  | 'actions'
+  | 'addProject'
+  | 'deleteProject'
+  | 'cancel'
+  | 'save'
+  | 'add'
+  | 'delete'
+  | 'editProject'
+  | 'createProject'
+  | 'projectTitle'
+  | 'projectSlug'
+  | 'projectCategory'
+  | 'projectDate'
+  | 'projectBrief'
+  | 'projectClient'
+  | 'projectWebsite'
+  | 'mediaType'
+  | 'photo'
+  | 'video'
   | 'adminDashboard'
   | 'projects'
   | 'manageProjects'
   | 'invalidCredentials'
-  | 'actions';
+  | 'actions'
+  // Новые ключи для сертификатов
+  | 'manageCertificates'
+  | 'addCertificate'
+  | 'editCertificate'
+  | 'certificateTitle'
+  | 'institution'
+  | 'year'
+  | 'description'
+  | 'noCertificatesFound'
+  | 'areYouSure'
+  | 'deleteConfirmation'
+  | 'certificateFormDescription'
+  // Ключи для информации об авторе
+  | 'manageAuthorInfo'
+  | 'authorInformation'
+  | 'authorInfoDescription'
+  | 'authorTitle'
+  | 'authorTitleDescription'
+  | 'firstParagraph'
+  | 'secondParagraph'
+  // Ключи для контактной информации
+  | 'manageContactInfo'
+  | 'contactInfoDescription'
+  | 'basicContactInfo'
+  | 'socialMedia'
+  | 'phoneOptional'
+  | 'locationOptional'
+  // Ключи для карточек на панели администратора
+  | 'certificatesManageDescription'
+  | 'aboutManageDescription'
+  | 'contactManageDescription';
 
 type TranslationContextType = {
   t: (key: TranslationKey) => string;
-  language: Language;
-  setLanguage: (lang: Language) => void;
+  lang: Language;
+  setLang: (lang: Language) => void;
+  toggleLang: () => void;
+  allLangs: Language[];
 };
 
-const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+// Provider component that wraps app and makes translation available to every component
+export function TranslationProvider({ children }: { children: React.ReactNode }) {
+  // We get the preferred language from localStorage if available
+  const getInitialLang = (): Language => {
+    if (typeof window !== 'undefined') {
+      const savedLang = localStorage.getItem('language');
+      if (savedLang && (savedLang === 'en' || savedLang === 'ru' || savedLang === 'pl')) {
+        return savedLang;
+      }
+      
+      // Use browser language as fallback
+      const browserLang = navigator.language.split('-')[0];
+      if (browserLang === 'ru') return 'ru';
+      if (browserLang === 'pl') return 'pl';
+    }
+    return 'en'; // Default language
+  };
 
-// Storage key for saved language preference
-const LANGUAGE_STORAGE_KEY = 'preferred_language';
+  const [lang, setLangState] = useState<Language>(getInitialLang);
+  const allLangs: Language[] = ['en', 'ru', 'pl'];
+  
+  // Update localStorage when language changes
+  const setLang = (newLang: Language) => {
+    setLangState(newLang);
+    localStorage.setItem('language', newLang);
+  };
+  
+  // Toggle between languages
+  const toggleLang = () => {
+    const currentIndex = allLangs.indexOf(lang);
+    const nextIndex = (currentIndex + 1) % allLangs.length;
+    setLang(allLangs[nextIndex]);
+  };
+  
+  // Translation function
+  const t = (key: TranslationKey): string => {
+    return translations[lang][key] || key;
+  };
+  
+  // Values for our context
+  const contextValue: TranslationContextType = {
+    t,
+    lang,
+    setLang,
+    toggleLang,
+    allLangs,
+  };
+  
+  // Provide the context to children
+  return (
+    <TranslationContext.Provider value={contextValue}>
+      {children}
+    </TranslationContext.Provider>
+  );
+}
 
-export const useTranslation = () => {
+// Custom hook to use translations
+export function useTranslation() {
   const context = useContext(TranslationContext);
   if (!context) {
-    throw new Error("useTranslation must be used within a TranslationProvider");
+    throw new Error('useTranslation must be used within a TranslationProvider');
   }
   return context;
-};
+}
 
-const translations: Record<Language, Record<TranslationKey, string>> = {
+// Our translations object
+const translations = {
   en: {
     notFound: "Page Not Found",
-    projectNotFoundMessage: "Could not find the project.",
-    backHome: "Back to Home",
-    backToProjects: "Back to Projects",
-    viewAll: "View All",
-    related: "Related Projects",
-    photo: "Photo",
-    video: "Video",
-    content: "Content",
+    backToHome: "Back to Home",
+    notFoundMessage: "The page you are looking for does not exist. It might have been moved or deleted.",
     home: "Home",
     about: "About",
+    skills: "Skills",
     portfolio: "Portfolio",
     contact: "Contact",
-    hello: "Hello, I'm",
-    description: "A creative developer passionate about crafting innovative web solutions and telling stories through code.",
-    resume: "Resume",
-    email: "Email",
-    subject: "Subject",
-    message: "Message",
-    send: "Send",
-    formSuccess: "Your message has been sent!",
-    formError: "There was an error sending your message. Please try again.",
-    name: "Name",
-    getInTouch: "Get in Touch",
-    contactDescription: "Feel free to reach out with any questions or opportunities.",
+    certificates: "Certificates",
+    downloadCV: "Download CV",
+    viewAllProjects: "View All Projects",
+    viewProject: "View Project",
+    allProjects: "All Projects",
+    photoProjects: "Photo",
+    videoProjects: "Video",
+    designProjects: "Design",
+    projectDetails: "Project Details",
+    client: "Client",
+    date: "Date",
+    category: "Category",
+    brief: "Brief",
+    viewWebsite: "View Website",
+    relatedProjects: "Related Projects",
+    aboutMe: "About Me",
+    getInTouch: "Get In Touch",
+    contactDescription: "Have a project in mind or want to say hello? Feel free to reach out!",
     contactInformation: "Contact Information",
+    email: "Email",
     phone: "Phone",
     location: "Location",
     followMe: "Follow Me",
-    journalism: "Journalism",
-    newsWriting: "News Writing",
-    interviewing: "Interviewing",
-    research: "Research",
-    storytelling: "Storytelling",
-    videoEditing: "Video Editing",
-    adobePremiere: "Adobe Premiere",
-    cinematography: "Cinematography",
-    marketing: "Marketing",
-    contentStrategy: "Content Strategy",
-    socialMedia: "Social Media",
-    seo: "SEO",
-    analytics: "Analytics",
-    mySkills: "My Skills",
-    skillsDescription: "Here are some of the skills I've developed over the years.",
-    aboutMe: "About Me",
-    footerTagline: "Journalist, Video Producer & Marketing Professional",
-    allRightsReserved: "All Rights Reserved",
-    certificates: "Certificates",
-    admin: "Admin",
-    login: "Login",
+    loginToAdmin: "Login to Admin Panel",
+    username: "Username",
     password: "Password",
     signIn: "Sign In",
     signOut: "Sign Out",
-    adminPanel: "Admin Panel",
-    editProject: "Edit Project",
-    deleteProject: "Delete Project",
-    addProject: "Add Project",
-    save: "Save",
-    cancel: "Cancel",
+    projectId: "ID",
     title: "Title",
-    category: "Category",
-    author: "Author",
-    date: "Date",
-    image: "Image URL",
-    addPhoto: "Add Photo",
-    addVideo: "Add Video",
-    thumbnailUrl: "Thumbnail URL",
-    duration: "Duration",
-    videoTitle: "Video Title",
-    projectContent: "Project Content",
-    relatedProjects: "Related Projects",
-    projectId: "Project ID",
+    content: "Content",
+    actions: "Actions",
+    addProject: "Add Project",
+    deleteProject: "Delete Project",
+    cancel: "Cancel",
+    save: "Save",
+    add: "Add",
+    delete: "Delete",
+    editProject: "Edit Project",
+    createProject: "Create Project",
+    projectTitle: "Project Title",
+    projectSlug: "Project Slug",
+    projectCategory: "Category",
+    projectDate: "Date",
+    projectBrief: "Brief",
+    projectClient: "Client",
+    projectWebsite: "Website URL",
+    mediaType: "Media Type",
+    photo: "Photo",
+    video: "Video",
     adminDashboard: "Admin Dashboard",
     projects: "Projects",
     manageProjects: "Manage Projects",
     invalidCredentials: "Invalid credentials. Please try again.",
-    actions: "Actions"
+    actions: "Actions",
+    // Новые переводы для сертификатов
+    manageCertificates: "Manage Certificates",
+    addCertificate: "Add Certificate",
+    editCertificate: "Edit Certificate",
+    certificateTitle: "Certificate Title",
+    institution: "Institution",
+    year: "Year",
+    description: "Description",
+    noCertificatesFound: "No certificates found. Add a new certificate to get started.",
+    areYouSure: "Are you sure?",
+    deleteConfirmation: "This action cannot be undone. This will permanently delete the item.",
+    certificateFormDescription: "Enter the details of the certificate.",
+    // Переводы для информации об авторе
+    manageAuthorInfo: "Manage Author Information",
+    authorInformation: "Author Information",
+    authorInfoDescription: "Update your personal information displayed in the About section.",
+    authorTitle: "Title / Headline",
+    authorTitleDescription: "A short professional headline that appears at the top of your About section.",
+    firstParagraph: "First Paragraph",
+    secondParagraph: "Second Paragraph",
+    // Переводы для контактной информации
+    manageContactInfo: "Manage Contact Information",
+    contactInfoDescription: "Update your contact details and social media links.",
+    basicContactInfo: "Basic Contact Information",
+    socialMedia: "Social Media Links",
+    phoneOptional: "Optional. Leave blank to hide from the contact section.",
+    locationOptional: "Optional. Leave blank to hide from the contact section.",
+    // Переводы для карточек на панели администратора
+    certificatesManageDescription: "Add, edit, or remove certificates and qualifications.",
+    aboutManageDescription: "Update your personal information in the About section.",
+    contactManageDescription: "Manage contact details and social media links."
   },
   ru: {
     notFound: "Страница не найдена",
-    projectNotFoundMessage: "Не удалось найти проект.",
-    backHome: "На главную страницу",
-    backToProjects: "Назад к проектам",
-    viewAll: "Смотреть все",
-    related: "Связанные проекты",
-    photo: "Фото",
-    video: "Видео",
-    content: "Контент",
+    backToHome: "На главную",
+    notFoundMessage: "Страница, которую вы ищете, не существует. Возможно, она была перемещена или удалена.",
     home: "Главная",
     about: "Обо мне",
+    skills: "Навыки",
     portfolio: "Портфолио",
     contact: "Контакты",
-    hello: "Привет, я",
-    description: "Креативный разработчик, увлеченный созданием инновационных веб-решений и рассказыванием историй через код.",
-    resume: "Резюме",
-    email: "Электронная почта",
-    subject: "Тема",
-    message: "Сообщение",
-    send: "Отправить",
-    formSuccess: "Ваше сообщение отправлено!",
-    formError: "Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте еще раз.",
-    name: "Имя",
-    getInTouch: "Свяжитесь со мной",
-    contactDescription: "Не стесняйтесь обращаться с любыми вопросами или предложениями.",
+    certificates: "Сертификаты",
+    downloadCV: "Скачать резюме",
+    viewAllProjects: "Все проекты",
+    viewProject: "Просмотр проекта",
+    allProjects: "Все проекты",
+    photoProjects: "Фото",
+    videoProjects: "Видео",
+    designProjects: "Дизайн",
+    projectDetails: "Детали проекта",
+    client: "Клиент",
+    date: "Дата",
+    category: "Категория",
+    brief: "Описание",
+    viewWebsite: "Перейти на сайт",
+    relatedProjects: "Похожие проекты",
+    aboutMe: "Обо мне",
+    getInTouch: "Связаться со мной",
+    contactDescription: "Есть проект или просто хотите поздороваться? Свяжитесь со мной!",
     contactInformation: "Контактная информация",
+    email: "Электронная почта",
     phone: "Телефон",
     location: "Местоположение",
-    followMe: "Подписывайтесь",
-    journalism: "Журналистика",
-    newsWriting: "Написание новостей",
-    interviewing: "Интервьюирование",
-    research: "Исследования",
-    storytelling: "Рассказывание историй",
-    videoEditing: "Видеомонтаж",
-    adobePremiere: "Adobe Premiere",
-    cinematography: "Кинематография",
-    marketing: "Маркетинг",
-    contentStrategy: "Контент-стратегия",
-    socialMedia: "Социальные сети",
-    seo: "SEO",
-    analytics: "Аналитика",
-    mySkills: "Мои навыки",
-    skillsDescription: "Вот некоторые из навыков, которые я развил за эти годы.",
-    aboutMe: "Обо мне",
-    footerTagline: "Журналист, Видеопродюсер и Маркетолог",
-    allRightsReserved: "Все права защищены",
-    certificates: "Сертификаты",
-    admin: "Администратор",
-    login: "Логин",
+    followMe: "Социальные сети",
+    loginToAdmin: "Вход в панель администратора",
+    username: "Имя пользователя",
     password: "Пароль",
     signIn: "Войти",
     signOut: "Выйти",
-    adminPanel: "Панель администратора",
-    editProject: "Редактировать проект",
-    deleteProject: "Удалить проект",
+    projectId: "ID",
+    title: "Название",
+    content: "Содержание",
+    actions: "Действия",
     addProject: "Добавить проект",
-    save: "Сохранить",
+    deleteProject: "Удалить проект",
     cancel: "Отмена",
-    title: "Заголовок",
-    category: "Категория",
-    author: "Автор",
-    date: "Дата",
-    image: "URL изображения",
-    addPhoto: "Добавить фото",
-    addVideo: "Добавить видео",
-    thumbnailUrl: "URL миниатюры",
-    duration: "Продолжительность",
-    videoTitle: "Название видео",
-    projectContent: "Содержание проекта",
-    relatedProjects: "Связанные проекты",
-    projectId: "ID проекта",
+    save: "Сохранить",
+    add: "Добавить",
+    delete: "Удалить",
+    editProject: "Редактировать проект",
+    createProject: "Создать проект",
+    projectTitle: "Название проекта",
+    projectSlug: "Slug проекта",
+    projectCategory: "Категория",
+    projectDate: "Дата",
+    projectBrief: "Описание",
+    projectClient: "Клиент",
+    projectWebsite: "URL сайта",
+    mediaType: "Тип медиа",
+    photo: "Фото",
+    video: "Видео",
     adminDashboard: "Панель управления",
     projects: "Проекты",
     manageProjects: "Управление проектами",
     invalidCredentials: "Неверные учетные данные. Пожалуйста, попробуйте снова.",
-    actions: "Действия"
+    actions: "Действия",
+    // Новые переводы для сертификатов
+    manageCertificates: "Управление сертификатами",
+    addCertificate: "Добавить сертификат",
+    editCertificate: "Редактировать сертификат",
+    certificateTitle: "Название сертификата",
+    institution: "Учреждение",
+    year: "Год",
+    description: "Описание",
+    noCertificatesFound: "Сертификаты не найдены. Добавьте новый сертификат, чтобы начать.",
+    areYouSure: "Вы уверены?",
+    deleteConfirmation: "Это действие нельзя отменить. Элемент будет удален навсегда.",
+    certificateFormDescription: "Введите детали сертификата.",
+    // Переводы для информации об авторе
+    manageAuthorInfo: "Управление информацией об авторе",
+    authorInformation: "Информация об авторе",
+    authorInfoDescription: "Обновите вашу личную информацию, отображаемую в разделе 'Обо мне'.",
+    authorTitle: "Заголовок / Профессия",
+    authorTitleDescription: "Краткое профессиональное описание, которое отображается в начале раздела 'Обо мне'.",
+    firstParagraph: "Первый абзац",
+    secondParagraph: "Второй абзац",
+    // Переводы для контактной информации
+    manageContactInfo: "Управление контактной информацией",
+    contactInfoDescription: "Обновите ваши контактные данные и ссылки на социальные сети.",
+    basicContactInfo: "Основная контактная информация",
+    socialMedia: "Ссылки на социальные сети",
+    phoneOptional: "Необязательно. Оставьте пустым, чтобы скрыть из раздела контактов.",
+    locationOptional: "Необязательно. Оставьте пустым, чтобы скрыть из раздела контактов.",
+    // Переводы для карточек на панели администратора
+    certificatesManageDescription: "Добавление, редактирование или удаление сертификатов и квалификаций.",
+    aboutManageDescription: "Обновление персональной информации в разделе 'Обо мне'.",
+    contactManageDescription: "Управление контактными данными и ссылками на социальные сети."
   },
   pl: {
     notFound: "Strona nie znaleziona",
-    projectNotFoundMessage: "Nie można znaleźć projektu.",
-    backHome: "Wróć do strony głównej",
-    backToProjects: "Powrót do projektów",
-    viewAll: "Zobacz wszystkie",
-    related: "Powiązane projekty",
-    photo: "Zdjęcie",
-    video: "Wideo",
-    content: "Zawartość",
-    home: "Dom",
+    backToHome: "Powrót do strony głównej",
+    notFoundMessage: "Strona, której szukasz, nie istnieje. Mogła zostać przeniesiona lub usunięta.",
+    home: "Strona główna",
     about: "O mnie",
+    skills: "Umiejętności",
     portfolio: "Portfolio",
     contact: "Kontakt",
-    hello: "Cześć, jestem",
-    description: "Kreatywny programista z pasją do tworzenia innowacyjnych rozwiązań internetowych i opowiadania historii za pomocą kodu.",
-    resume: "CV",
-    email: "E-mail",
-    subject: "Temat",
-    message: "Wiadomość",
-    send: "Wyślij",
-    formSuccess: "Twoja wiadomość została wysłana!",
-    formError: "Wystąpił błąd podczas wysyłania wiadomości. Proszę spróbować ponownie.",
-    name: "Imię",
+    certificates: "Certyfikaty",
+    downloadCV: "Pobierz CV",
+    viewAllProjects: "Zobacz wszystkie projekty",
+    viewProject: "Zobacz projekt",
+    allProjects: "Wszystkie projekty",
+    photoProjects: "Zdjęcia",
+    videoProjects: "Wideo",
+    designProjects: "Design",
+    projectDetails: "Szczegóły projektu",
+    client: "Klient",
+    date: "Data",
+    category: "Kategoria",
+    brief: "Opis",
+    viewWebsite: "Zobacz stronę",
+    relatedProjects: "Powiązane projekty",
+    aboutMe: "O mnie",
     getInTouch: "Skontaktuj się",
-    contactDescription: "Zapraszam do kontaktu w sprawie pytań lub możliwości współpracy.",
+    contactDescription: "Masz pomysł na projekt lub chcesz się przywitać? Skontaktuj się ze mną!",
     contactInformation: "Informacje kontaktowe",
+    email: "Email",
     phone: "Telefon",
     location: "Lokalizacja",
     followMe: "Obserwuj mnie",
-    journalism: "Dziennikarstwo",
-    newsWriting: "Pisanie wiadomości",
-    interviewing: "Przeprowadzanie wywiadów",
-    research: "Badania",
-    storytelling: "Opowiadanie historii",
-    videoEditing: "Montaż wideo",
-    adobePremiere: "Adobe Premiere",
-    cinematography: "Kinematografia",
-    marketing: "Marketing",
-    contentStrategy: "Strategia treści",
-    socialMedia: "Media społecznościowe",
-    seo: "SEO",
-    analytics: "Analityka",
-    mySkills: "Moje umiejętności",
-    skillsDescription: "Oto niektóre z umiejętności, które rozwinąłem na przestrzeni lat.",
-    aboutMe: "O mnie",
-    footerTagline: "Dziennikarz, Producent Wideo i Specjalista ds. Marketingu",
-    allRightsReserved: "Wszelkie prawa zastrzeżone",
-    certificates: "Certyfikaty",
-    admin: "Admin",
-    login: "Login",
+    loginToAdmin: "Logowanie do panelu administratora",
+    username: "Nazwa użytkownika",
     password: "Hasło",
     signIn: "Zaloguj się",
     signOut: "Wyloguj się",
-    adminPanel: "Panel Administratora",
-    editProject: "Edytuj projekt",
-    deleteProject: "Usuń projekt",
-    addProject: "Dodaj projekt",
-    save: "Zapisz",
-    cancel: "Anuluj",
+    projectId: "ID",
     title: "Tytuł",
-    category: "Kategoria",
-    author: "Autor",
-    date: "Data",
-    image: "URL obrazu",
-    addPhoto: "Dodaj zdjęcie",
-    addVideo: "Dodaj wideo",
-    thumbnailUrl: "URL miniatury",
-    duration: "Czas trwania",
-    videoTitle: "Tytuł wideo",
-    projectContent: "Treść projektu",
-    relatedProjects: "Powiązane projekty",
-    projectId: "ID projektu",
+    content: "Zawartość",
+    actions: "Akcje",
+    addProject: "Dodaj projekt",
+    deleteProject: "Usuń projekt",
+    cancel: "Anuluj",
+    save: "Zapisz",
+    add: "Dodaj",
+    delete: "Usuń",
+    editProject: "Edytuj projekt",
+    createProject: "Utwórz projekt",
+    projectTitle: "Tytuł projektu",
+    projectSlug: "Slug projektu",
+    projectCategory: "Kategoria",
+    projectDate: "Data",
+    projectBrief: "Opis",
+    projectClient: "Klient",
+    projectWebsite: "URL strony",
+    mediaType: "Typ mediów",
+    photo: "Zdjęcie",
+    video: "Wideo",
     adminDashboard: "Panel administratora",
     projects: "Projekty",
     manageProjects: "Zarządzaj projektami",
     invalidCredentials: "Nieprawidłowe dane logowania. Spróbuj ponownie.",
-    actions: "Akcje"
+    actions: "Akcje",
+    // Новые переводы для сертификатов
+    manageCertificates: "Zarządzaj certyfikatami",
+    addCertificate: "Dodaj certyfikat",
+    editCertificate: "Edytuj certyfikat",
+    certificateTitle: "Nazwa certyfikatu",
+    institution: "Instytucja",
+    year: "Rok",
+    description: "Opis",
+    noCertificatesFound: "Nie znaleziono certyfikatów. Dodaj nowy certyfikat, aby rozpocząć.",
+    areYouSure: "Czy jesteś pewien?",
+    deleteConfirmation: "Tej akcji nie można cofnąć. Element zostanie trwale usunięty.",
+    certificateFormDescription: "Wprowadź szczegóły certyfikatu.",
+    // Переводы для информации об авторе
+    manageAuthorInfo: "Zarządzaj informacjami o autorze",
+    authorInformation: "Informacje o autorze",
+    authorInfoDescription: "Zaktualizuj swoje dane osobowe wyświetlane w sekcji O mnie.",
+    authorTitle: "Tytuł / Nagłówek",
+    authorTitleDescription: "Krótki nagłówek zawodowy, który pojawia się na górze sekcji O mnie.",
+    firstParagraph: "Pierwszy akapit",
+    secondParagraph: "Drugi akapit",
+    // Переводы для контактной информации
+    manageContactInfo: "Zarządzaj informacjami kontaktowymi",
+    contactInfoDescription: "Zaktualizuj swoje dane kontaktowe i linki do mediów społecznościowych.",
+    basicContactInfo: "Podstawowe informacje kontaktowe",
+    socialMedia: "Linki do mediów społecznościowych",
+    phoneOptional: "Opcjonalnie. Pozostaw puste, aby ukryć w sekcji kontaktowej.",
+    locationOptional: "Opcjonalnie. Pozostaw puste, aby ukryć w sekcji kontaktowej.",
+    // Переводы для карточек на панели администратора
+    certificatesManageDescription: "Dodawanie, edytowanie lub usuwanie certyfikatów i kwalifikacji.",
+    aboutManageDescription: "Zaktualizuj swoje dane osobowe w sekcji O mnie.",
+    contactManageDescription: "Zarządzaj danymi kontaktowymi i linkami do mediów społecznościowych."
   }
 };
-
-type TranslationProviderProps = {
-  children: React.ReactNode;
-  initialLanguage?: Language;
-};
-
-export const TranslationProvider: React.FC<TranslationProviderProps> = ({ 
-  children, 
-  initialLanguage = 'ru' 
-}) => {
-  const [language, setLanguageState] = useState<Language>(() => {
-    // Try to get language from localStorage first
-    const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
-    return savedLanguage || initialLanguage;
-  });
-
-  // Update localStorage when language changes
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-  };
-
-  const t = (key: TranslationKey) => {
-    return translations[language][key] || `Missing translation for ${key} in ${language}`;
-  };
-
-  return (
-    <TranslationContext.Provider value={{ t, language, setLanguage }}>
-      {children}
-    </TranslationContext.Provider>
-  );
-};
-
-export default useTranslation;

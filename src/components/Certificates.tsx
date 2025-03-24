@@ -1,35 +1,13 @@
 
 import React from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useCertificatesStore } from '@/hooks/useCertificatesStore';
 
 const Certificates = () => {
   const { t } = useTranslation();
+  const { getAllCertificates } = useCertificatesStore();
   
-  const certificates = 
-  [
-{
-id: 1,
-title: 'Polish Language Proficiency (B2)',
-institution: 'Szkoła Języka Polskiego Tylko Polski',
-year: 'N/A',
-description: 'Certified proficiency in Polish as a foreign language at B2 level.'
-},
-{
-id: 2,
-title: 'Mastering Tenses - Intensive Online Course',
-institution: 'LinguaTrip',
-year: '2020',
-description: 'Completed an intensive course on mastering English tense structures.'
-},
-{
-id: 3,
-title: 'Journalism Experience Certificate',
-institution: 'Kurier Akademicki',
-year: '2024',
-description: 'Editorial board member responsible for writing scripts, conducting interviews, and editing journalistic materials.'
-},
-]
-  ;
+  const certificates = getAllCertificates();
 
   return (
     <section id="certificates" className="section-container bg-white">

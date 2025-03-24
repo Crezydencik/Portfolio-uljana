@@ -11,7 +11,10 @@ import {
   LogOut, 
   Film, 
   Image, 
-  Home 
+  Home,
+  Certificate,
+  User,
+  Mail
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
@@ -34,6 +37,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
@@ -71,6 +75,65 @@ const AdminDashboard = () => {
       </header>
       
       <main className="container max-w-6xl mx-auto py-8 px-4">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Certificate className="h-5 w-5 text-purple-600" />
+                {t('certificates')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                {t('certificatesManageDescription')}
+              </p>
+              <Link to="/admin/certificates">
+                <Button className="w-full">
+                  {t('manageCertificates')}
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+          
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <User className="h-5 w-5 text-blue-600" />
+                {t('aboutMe')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                {t('aboutManageDescription')}
+              </p>
+              <Link to="/admin/author-info">
+                <Button className="w-full">
+                  {t('manageAuthorInfo')}
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+          
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Mail className="h-5 w-5 text-teal-600" />
+                {t('contactInformation')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                {t('contactManageDescription')}
+              </p>
+              <Link to="/admin/contact">
+                <Button className="w-full">
+                  {t('manageContactInfo')}
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+        
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold">{t('manageProjects')}</h2>
