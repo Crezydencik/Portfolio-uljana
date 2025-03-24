@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
-import { useCertificatesStore } from '@/hooks/useCertificatesStore';
+import { useCertificatesStore, Certificate } from '@/hooks/useCertificatesStore';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Award, Plus, Pencil, Trash2, AlertCircle } from 'lucide-react';
+import { Plus, Pencil, Trash2, AlertCircle, Award } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,8 +18,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { v4 as uuidv4 } from 'uuid';
 
 const AdminCertificates = () => {
   const { certificates, addCertificate, updateCertificate, deleteCertificate } = useCertificatesStore();
@@ -36,14 +39,26 @@ const AdminCertificates = () => {
   const handleAddEditCertificate = () => {
     if (editCertificateId) {
       // Edit existing certificate
-      updateCertificate(editCertificateId, { title, institution, year, description });
+      updateCertificate({
+        id: editCertificateId,
+        title,
+        institution,
+        year,
+        description
+      });
       toast({
         title: 'Success',
         description: 'Certificate updated successfully',
       });
     } else {
       // Add new certificate
-      addCertificate({ title, institution, year, description });
+      addCertificate({
+        id: uuidv4(),
+        title,
+        institution,
+        year,
+        description
+      });
       toast({
         title: 'Success',
         description: 'Certificate added successfully',
@@ -92,7 +107,7 @@ const AdminCertificates = () => {
           <h1 className="text-2xl font-bold">{t('manageCertificates')}</h1>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button variant="primary">
+              <Button variant="default">
                 <Plus className="mr-2 h-4 w-4" />
                 {t('addCertificate')}
               </Button>
@@ -150,7 +165,10 @@ const AdminCertificates = () => {
                     <Button variant="outline" size="icon" onClick={() => handleEdit(certificate.id)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <AlertDialog open={isDeleteDialogOpen === certificate.id} onOpenChange={() => setIsDeleteDialogOpen(isDeleteDialogOpen === certificate.id ? false : certificate.id)}>
+                    <AlertDialog open={isDeleteDialogOpen && certificateToDelete === certificate.id} onOpenChange={(open) => {
+                      setIsDeleteDialogOpen(open);
+                      if (!open) setCertificateToDelete(null);
+                    }}>
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" size="icon" onClick={() => setCertificateToDelete(certificate.id)}>
                           <Trash2 className="h-4 w-4" />
@@ -164,7 +182,7 @@ const AdminCertificates = () => {
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>{t('cancel')}</AlertDialogCancel>
+                          <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
                           <AlertDialogAction onClick={handleDeleteCertificate}>{t('delete')}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>

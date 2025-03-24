@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 // Define Language type directly instead of importing from next-international
 type Language = 'en' | 'ru' | 'pl';
@@ -77,6 +77,7 @@ export type TranslationKey =
   | 'projects'
   | 'manageProjects'
   | 'invalidCredentials'
+  | 'login'
   // Ключи для журналистики и навыков
   | 'journalism'
   | 'newsWriting'
@@ -102,8 +103,6 @@ export type TranslationKey =
   // Ключи для футера
   | 'footerTagline'
   | 'allRightsReserved'
-  // Ключи для логина
-  | 'login'
   // Новые ключи для сертификатов
   | 'manageCertificates'
   | 'addCertificate'
@@ -134,7 +133,8 @@ export type TranslationKey =
   // Ключи для карточек на панели администратора
   | 'certificatesManageDescription'
   | 'aboutManageDescription'
-  | 'contactManageDescription';
+  | 'contactManageDescription'
+  | 'projectsManageDescription';
 
 // Context to store the current language and translation functions
 type TranslationContextType = {
@@ -348,7 +348,8 @@ const translations = {
     // Переводы для карточек на панели администратора
     certificatesManageDescription: "Add, edit, or remove certificates and qualifications.",
     aboutManageDescription: "Update your personal information in the About section.",
-    contactManageDescription: "Manage contact details and social media links."
+    contactManageDescription: "Manage contact details and social media links.",
+    projectsManageDescription: "Add, edit, or remove projects from your portfolio."
   },
   ru: {
     notFound: "Страница не найдена",
@@ -478,7 +479,8 @@ const translations = {
     // Переводы для карточек на панели администратора
     certificatesManageDescription: "Добавление, редактирование или удаление сертификатов и квалификаций.",
     aboutManageDescription: "Обновление персональной информации в разделе 'Обо мне'.",
-    contactManageDescription: "Управление контактными данными и ссылками на социальные сети."
+    contactManageDescription: "Управление контактными данными и ссылками на социальные сети.",
+    projectsManageDescription: "Добавление, редактирование или удаление проектов в вашем портфолио."
   },
   pl: {
     notFound: "Strona nie znaleziona",
@@ -608,6 +610,7 @@ const translations = {
     // Переводы для карточек на панели администратора
     certificatesManageDescription: "Dodawanie, edytowanie lub usuwanie certyfikatów i kwalifikacji.",
     aboutManageDescription: "Zaktualizuj swoje dane osobowe w sekcji O mnie.",
-    contactManageDescription: "Zarządzaj danymi kontaktowymi i linkami do mediów społecznościowych."
+    contactManageDescription: "Zarządzaj danymi kontaktowymi i linkami do mediów społecznościowych.",
+    projectsManageDescription: "Dodawanie, edytowanie lub usuwanie projektów w twoim portfolio."
   }
 };

@@ -1,10 +1,11 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Folder, User, Contact, Award } from 'lucide-react';
+import { Folder, User, Mail, Award } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ const AdminDashboard = () => {
                 <Folder className="h-4 w-4" />
                 {t('manageProjects')}
               </CardTitle>
-              <CardDescription>{t('projectsManageDescription')}</CardDescription>
+              <CardDescription>{t('projectsManageDescription') || "Add, edit, or remove projects from your portfolio."}</CardDescription>
             </CardHeader>
             <CardContent>
               {t('manageProjects')} {t('projects')}
@@ -44,7 +45,7 @@ const AdminDashboard = () => {
               <CardDescription>{t('certificatesManageDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
-              {t('addCertificate')}, {t('editCertificate')}, {t('deleteCertificate')}
+              {t('addCertificate')}, {t('editCertificate')}, {t('delete')}
             </CardContent>
             <CardFooter>
               <Link to="/admin/certificates">
@@ -76,7 +77,7 @@ const AdminDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Contact className="h-4 w-4" />
+                <Mail className="h-4 w-4" />
                 {t('manageContactInfo')}
               </CardTitle>
               <CardDescription>{t('contactManageDescription')}</CardDescription>

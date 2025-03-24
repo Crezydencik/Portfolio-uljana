@@ -58,7 +58,7 @@ const App = () => (
                   <AdminAuthorInfo />
                 </ProtectedRoute>
               } />
-              <Route path="/admin/contact" element={
+              <Route path="/admin/contact-info" element={
                 <ProtectedRoute>
                   <AdminContact />
                 </ProtectedRoute>
