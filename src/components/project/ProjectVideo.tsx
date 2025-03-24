@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Film, Play } from 'lucide-react';
+import React, { useState } from 'react';
+import { Film, Play, X } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface VideoItem {
@@ -15,6 +15,24 @@ interface ProjectVideoProps {
 
 const ProjectVideo = ({ videos }: ProjectVideoProps) => {
   const { t } = useTranslation();
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  
+  // For simplicity, we'll use YouTube embed URLs
+  // In a real app, you would use your own video links or a video hosting service
+  const getYouTubeEmbedUrl = (videoTitle: string) => {
+    // This is a demo function - in a real app, you would use actual video URLs
+    // Here we just create a YouTube search URL based on the title
+    const searchQuery = encodeURIComponent(videoTitle);
+    return `https://www.youtube.com/embed?search=${searchQuery}&autoplay=1`;
+  };
+  
+  const handlePlayVideo = (videoTitle: string) => {
+    setActiveVideo(videoTitle);
+  };
+  
+  const handleCloseVideo = () => {
+    setActiveVideo(null);
+  };
 
   return (
     <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
@@ -37,9 +55,12 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
               </div>
               <div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="rounded-full bg-red-600/90 p-4 flex items-center justify-center group-hover:bg-red-700 transition-colors">
+                  <button 
+                    onClick={() => handlePlayVideo(video.title)}
+                    className="rounded-full bg-red-600/90 p-4 flex items-center justify-center group-hover:bg-red-700 transition-colors"
+                  >
                     <Play fill="white" className="text-white" size={24} />
-                  </div>
+                  </button>
                 </div>
                 <h4 className="text-white text-lg font-medium relative z-10 mt-auto">
                   {video.title}
@@ -49,6 +70,28 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
           </div>
         ))}
       </div>
+      
+      {/* Video Player Modal */}
+      {activeVideo && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-4xl aspect-video bg-black">
+            <button 
+              onClick={handleCloseVideo}
+              className="absolute -top-10 right-0 text-white hover:text-red-500 transition-colors"
+              aria-label="Close"
+            >
+              <X size={24} />
+            </button>
+            <iframe
+              src={getYouTubeEmbedUrl(activeVideo)}
+              title={activeVideo}
+              className="w-full h-full"
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

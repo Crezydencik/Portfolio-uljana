@@ -1,5 +1,5 @@
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 // Define Language type directly instead of importing from next-international
 export type Language = 'en' | 'ru' | 'pl';
@@ -52,14 +52,46 @@ type TranslationKey =
   | 'aboutMe'
   | 'footerTagline'
   | 'allRightsReserved'
-  | 'certificates';
+  | 'certificates'
+  | 'admin'
+  | 'login'
+  | 'password'
+  | 'signIn'
+  | 'signOut'
+  | 'adminPanel'
+  | 'editProject'
+  | 'deleteProject'
+  | 'addProject'
+  | 'save'
+  | 'cancel'
+  | 'title'
+  | 'category'
+  | 'author'
+  | 'date'
+  | 'image'
+  | 'addPhoto'
+  | 'addVideo'
+  | 'thumbnailUrl'
+  | 'duration'
+  | 'videoTitle'
+  | 'projectContent'
+  | 'relatedProjects'
+  | 'projectId'
+  | 'adminDashboard'
+  | 'projects'
+  | 'manageProjects'
+  | 'invalidCredentials';
 
 type TranslationContextType = {
   t: (key: TranslationKey) => string;
   language: Language;
+  setLanguage: (lang: Language) => void;
 };
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+
+// Storage key for saved language preference
+const LANGUAGE_STORAGE_KEY = 'preferred_language';
 
 export const useTranslation = () => {
   const context = useContext(TranslationContext);
@@ -118,7 +150,35 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     aboutMe: "About Me",
     footerTagline: "Journalist, Video Producer & Marketing Professional",
     allRightsReserved: "All Rights Reserved",
-    certificates: "Certificates"
+    certificates: "Certificates",
+    admin: "Admin",
+    login: "Login",
+    password: "Password",
+    signIn: "Sign In",
+    signOut: "Sign Out",
+    adminPanel: "Admin Panel",
+    editProject: "Edit Project",
+    deleteProject: "Delete Project",
+    addProject: "Add Project",
+    save: "Save",
+    cancel: "Cancel",
+    title: "Title",
+    category: "Category",
+    author: "Author",
+    date: "Date",
+    image: "Image URL",
+    addPhoto: "Add Photo",
+    addVideo: "Add Video",
+    thumbnailUrl: "Thumbnail URL",
+    duration: "Duration",
+    videoTitle: "Video Title",
+    projectContent: "Project Content",
+    relatedProjects: "Related Projects",
+    projectId: "Project ID",
+    adminDashboard: "Admin Dashboard",
+    projects: "Projects",
+    manageProjects: "Manage Projects",
+    invalidCredentials: "Invalid credentials. Please try again."
   },
   ru: {
     notFound: "Страница не найдена",
@@ -168,7 +228,35 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     aboutMe: "Обо мне",
     footerTagline: "Журналист, Видеопродюсер и Маркетолог",
     allRightsReserved: "Все права защищены",
-    certificates: "Сертификаты"
+    certificates: "Сертификаты",
+    admin: "Администратор",
+    login: "Логин",
+    password: "Пароль",
+    signIn: "Войти",
+    signOut: "Выйти",
+    adminPanel: "Панель администратора",
+    editProject: "Редактировать проект",
+    deleteProject: "Удалить проект",
+    addProject: "Добавить проект",
+    save: "Сохранить",
+    cancel: "Отмена",
+    title: "Заголовок",
+    category: "Категория",
+    author: "Автор",
+    date: "Дата",
+    image: "URL изображения",
+    addPhoto: "Добавить фото",
+    addVideo: "Добавить видео",
+    thumbnailUrl: "URL миниатюры",
+    duration: "Продолжительность",
+    videoTitle: "Название видео",
+    projectContent: "Содержание проекта",
+    relatedProjects: "Связанные проекты",
+    projectId: "ID проекта",
+    adminDashboard: "Панель управления",
+    projects: "Проекты",
+    manageProjects: "Управление проектами",
+    invalidCredentials: "Неверные учетные данные. Пожалуйста, попробуйте снова."
   },
   pl: {
     notFound: "Strona nie znaleziona",
@@ -218,22 +306,65 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     aboutMe: "O mnie",
     footerTagline: "Dziennikarz, Producent Wideo i Specjalista ds. Marketingu",
     allRightsReserved: "Wszelkie prawa zastrzeżone",
-    certificates: "Certyfikaty"
+    certificates: "Certyfikaty",
+    admin: "Admin",
+    login: "Login",
+    password: "Hasło",
+    signIn: "Zaloguj się",
+    signOut: "Wyloguj się",
+    adminPanel: "Panel Administratora",
+    editProject: "Edytuj projekt",
+    deleteProject: "Usuń projekt",
+    addProject: "Dodaj projekt",
+    save: "Zapisz",
+    cancel: "Anuluj",
+    title: "Tytuł",
+    category: "Kategoria",
+    author: "Autor",
+    date: "Data",
+    image: "URL obrazu",
+    addPhoto: "Dodaj zdjęcie",
+    addVideo: "Dodaj wideo",
+    thumbnailUrl: "URL miniatury",
+    duration: "Czas trwania",
+    videoTitle: "Tytuł wideo",
+    projectContent: "Treść projektu",
+    relatedProjects: "Powiązane projekty",
+    projectId: "ID projektu",
+    adminDashboard: "Panel administratora",
+    projects: "Projekty",
+    manageProjects: "Zarządzaj projektami",
+    invalidCredentials: "Nieprawidłowe dane logowania. Spróbuj ponownie."
   }
 };
 
 type TranslationProviderProps = {
   children: React.ReactNode;
-  language: Language;
+  initialLanguage?: Language;
 };
 
-export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children, language }) => {
+export const TranslationProvider: React.FC<TranslationProviderProps> = ({ 
+  children, 
+  initialLanguage = 'ru' 
+}) => {
+  const [language, setLanguageState] = useState<Language>(() => {
+    // Try to get language from localStorage first
+    const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
+    return savedLanguage || initialLanguage;
+  });
+
+  // Update localStorage when language changes
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+  };
+
   const t = (key: TranslationKey) => {
     return translations[language][key] || `Missing translation for ${key} in ${language}`;
   };
 
   return (
-    <TranslationContext.Provider value={{ t, language }}>
+    <TranslationContext.Provider value={{ t, language, setLanguage }}>
       {children}
     </TranslationContext.Provider>
   );

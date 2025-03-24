@@ -13,7 +13,7 @@ import {
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { language } = useTranslation();
+  const { language, setLanguage } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,16 +63,55 @@ const Header = () => {
               {link.name}
             </a>
           ))}
+          
+          {/* Language Switcher */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 text-portfolio-black hover:text-purple-600 transition-colors duration-300">
+              <Globe size={18} />
+              <span className="uppercase">{language}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setLanguage('en')}>
+                English
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('ru')}>
+                Русский
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('pl')}>
+                Polski
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-portfolio-black"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          {/* Mobile Language Switcher */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="text-portfolio-black hover:text-purple-600 transition-colors duration-300 p-1">
+              <Globe size={20} />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setLanguage('en')}>
+                English
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('ru')}>
+                Русский
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('pl')}>
+                Polski
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
+          <button
+            className="text-portfolio-black"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (

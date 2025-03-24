@@ -3,40 +3,18 @@ import React from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Film, Image } from 'lucide-react';
+import { useProjectStore } from '@/hooks/useProjectStore';
 
 const Portfolio = () => {
   const { t } = useTranslation();
-
-  const projects = [
-    {
-      id: 'kanken-and-vlog',
-      title: 'Kanken and vlog',
-      category: 'Editors',
-      image: '/projeck/kanken/kanken-photo.png',
-      mediaType: ['photo']
-    },
-    // {
-    //   id: 'tech-industry-expose',
-    //   title: 'Tech Industry Expose',
-    //   category: 'Investigative',
-    //   image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
-    //   mediaType: ['photo']
-    // },
-    // {
-    //   id: 'urban-wildlife-documentary',
-    //   title: 'Urban Wildlife Documentary',
-    //   category: 'Documentary',
-    //   image: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
-    //   mediaType: ['video', 'photo']
-    // },
-    // {
-    //   id: 'eco-friendly-product-launch',
-    //   title: 'Eco-Friendly Product Launch',
-    //   category: 'Campaign',
-    //   image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
-    //   mediaType: ['photo', 'video']
-    // },
-  ];
+  const { getAllProjects } = useProjectStore();
+  
+  // Get all projects from the store
+  const allProjects = getAllProjects();
+  
+  // Only display projects in the portfolio that should be visible
+  // (For a real app, you might want to add a 'visible' flag to projects)
+  const projects = allProjects.slice(0, 4); // Limit to 4 projects on the homepage
 
   return (
     <section id="portfolio" className="section-container bg-white">
