@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 
 // Define Language type directly instead of importing from next-international
@@ -80,7 +79,8 @@ type TranslationKey =
   | 'adminDashboard'
   | 'projects'
   | 'manageProjects'
-  | 'invalidCredentials';
+  | 'invalidCredentials'
+  | 'actions';
 
 type TranslationContextType = {
   t: (key: TranslationKey) => string;
@@ -178,7 +178,8 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     adminDashboard: "Admin Dashboard",
     projects: "Projects",
     manageProjects: "Manage Projects",
-    invalidCredentials: "Invalid credentials. Please try again."
+    invalidCredentials: "Invalid credentials. Please try again.",
+    actions: "Actions"
   },
   ru: {
     notFound: "Страница не найдена",
@@ -256,7 +257,8 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     adminDashboard: "Панель управления",
     projects: "Проекты",
     manageProjects: "Управление проектами",
-    invalidCredentials: "Неверные учетные данные. Пожалуйста, попробуйте снова."
+    invalidCredentials: "Неверные учетные данные. Пожалуйста, попробуйте снова.",
+    actions: "Действия"
   },
   pl: {
     notFound: "Strona nie znaleziona",
@@ -334,7 +336,8 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     adminDashboard: "Panel administratora",
     projects: "Projekty",
     manageProjects: "Zarządzaj projektami",
-    invalidCredentials: "Nieprawidłowe dane logowania. Spróbuj ponownie."
+    invalidCredentials: "Nieprawidłowe dane logowania. Spróbuj ponownie.",
+    actions: "Akcje"
   }
 };
 
