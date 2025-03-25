@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminCertificates from "./pages/admin/AdminCertificates";
 import AdminAuthorInfo from "./pages/admin/AdminAuthorInfo";
 import AdminContact from "./pages/admin/AdminContact";
+import AdminSkills from "./pages/admin/AdminSkills";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,11 @@ const App = () => (
               <Route path="/admin/contact-info" element={
                 <ProtectedRoute>
                   <AdminContact />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/skills" element={
+                <ProtectedRoute>
+                  <AdminSkills />
                 </ProtectedRoute>
               } />
               

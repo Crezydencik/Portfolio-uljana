@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useProjectStore } from '@/hooks/useProjectStore';
@@ -14,12 +14,12 @@ import {
   ArrowLeft,
   FilePlus,
   Film,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Upload
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Card,
@@ -28,6 +28,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
+import RichTextEditor from '@/components/RichTextEditor';
 
 const AdminProjectEdit = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,7 +36,10 @@ const AdminProjectEdit = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { getProject, addProject, updateProject } = useProjectStore();
+  const { getProject, addProject, updateProject, getAllProjects } = useProjectStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const photoFileInputRef = useRef<HTMLInputElement>(null);
+  const videoThumbnailInputRef = useRef<HTMLInputElement>(null);
 
   // Default empty project
   const emptyProject: Project = {
@@ -46,7 +50,9 @@ const AdminProjectEdit = () => {
     date: '',
     image: '',
     content: '',
-    mediaType: []
+    mediaType: [],
+    imageFile: null,
+    photoFiles: []
   };
 
   const [project, setProject] = useState<Project>(emptyProject);
@@ -59,6 +65,10 @@ const AdminProjectEdit = () => {
     duration: ''
   });
 
+  // Get all projects for selection
+  const allProjects = getAllProjects();
+  const [selectedRelatedProjects, setSelectedRelatedProjects] = useState<string[]>([]);
+
   useEffect(() => {
     if (!isNewProject && id) {
       const existingProject = getProject(id);
@@ -66,6 +76,7 @@ const AdminProjectEdit = () => {
         setProject(existingProject);
         setPhotos(existingProject.photos || []);
         setVideos(existingProject.videos || []);
+        setSelectedRelatedProjects(existingProject.relatedProjects || []);
       } else {
         toast({
           title: 'Error',
@@ -80,6 +91,10 @@ const AdminProjectEdit = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProject(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleContentChange = (content: string) => {
+    setProject(prev => ({ ...prev, content }));
   };
 
   const handleMediaTypeChange = (type: 'photo' | 'video') => {
@@ -99,6 +114,63 @@ const AdminProjectEdit = () => {
         };
       }
     });
+  };
+
+  const handleMainImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const imageUrl = URL.createObjectURL(file);
+      
+      setProject(prev => ({
+        ...prev,
+        image: imageUrl,
+        imageFile: file
+      }));
+      
+      toast({
+        title: 'Image Selected',
+        description: `File: ${file.name}`
+      });
+    }
+  };
+
+  const handlePhotoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const newPhotos = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+      
+      setPhotos(prev => [...prev, ...newPhotos]);
+      setProject(prev => ({
+        ...prev,
+        photoFiles: [...(prev.photoFiles || []), ...Array.from(e.target.files as FileList)]
+      }));
+      
+      // Ensure 'photo' is in mediaType
+      if (!project.mediaType?.includes('photo')) {
+        handleMediaTypeChange('photo');
+      }
+      
+      toast({
+        title: 'Photos Selected',
+        description: `${e.target.files.length} files selected`
+      });
+    }
+  };
+
+  const handleVideoThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const thumbnailUrl = URL.createObjectURL(file);
+      
+      setNewVideo(prev => ({
+        ...prev,
+        thumbnail: thumbnailUrl
+      }));
+      
+      toast({
+        title: 'Thumbnail Selected',
+        description: `File: ${file.name}`
+      });
+    }
   };
 
   const addPhotoToProject = () => {
@@ -158,6 +230,16 @@ const AdminProjectEdit = () => {
     setNewVideo(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleRelatedProjectToggle = (projectId: string) => {
+    setSelectedRelatedProjects(prev => {
+      if (prev.includes(projectId)) {
+        return prev.filter(id => id !== projectId);
+      } else {
+        return [...prev, projectId];
+      }
+    });
+  };
+
   const handleSave = () => {
     // Validate required fields
     if (!project.id || !project.title) {
@@ -174,6 +256,7 @@ const AdminProjectEdit = () => {
       ...project,
       photos: photos.length > 0 ? photos : undefined,
       videos: videos.length > 0 ? videos : undefined,
+      relatedProjects: selectedRelatedProjects.length > 0 ? selectedRelatedProjects : undefined
     };
 
     if (isNewProject) {
@@ -293,30 +376,52 @@ const AdminProjectEdit = () => {
 
               <div>
                 <Label htmlFor="image">{t('image')}</Label>
-                <Input
-                  id="image"
-                  name="image"
-                  value={project.image}
-                  onChange={handleInputChange}
-                  placeholder="Image URL"
-                  required
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="image"
+                    name="image"
+                    value={project.image}
+                    onChange={handleInputChange}
+                    placeholder="Image URL"
+                    required
+                  />
+                  <Button 
+                    type="button" 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-purple-600 hover:bg-purple-700 whitespace-nowrap"
+                  >
+                    <Upload size={16} className="mr-2" /> {t('uploadImage')}
+                  </Button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleMainImageUpload}
+                  />
+                </div>
+                {project.image && (
+                  <div className="mt-2">
+                    <img 
+                      src={project.image} 
+                      alt="Preview" 
+                      className="h-20 object-cover rounded border" 
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           <div className="mb-6">
             <Label htmlFor="content">{t('projectContent')}</Label>
-            <Textarea
-              id="content"
-              name="content"
+            <RichTextEditor
               value={project.content}
-              onChange={handleInputChange}
-              placeholder="HTML content of the project"
-              className="min-h-[200px] font-mono text-sm"
+              onChange={handleContentChange}
+              placeholder="Content of the project"
             />
             <p className="text-xs text-gray-500 mt-1">
-              You can use HTML tags to format the content
+              You can format the content using the toolbar above
             </p>
           </div>
 
@@ -350,6 +455,9 @@ const AdminProjectEdit = () => {
               <TabsTrigger value="videos" className="flex items-center">
                 <Film size={16} className="mr-2" /> Videos
               </TabsTrigger>
+              <TabsTrigger value="related" className="flex items-center">
+                Related Projects
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="photos" className="space-y-4">
@@ -367,6 +475,21 @@ const AdminProjectEdit = () => {
                 >
                   <Plus size={16} className="mr-2" /> {t('addPhoto')}
                 </Button>
+                <Button 
+                  type="button" 
+                  onClick={() => photoFileInputRef.current?.click()}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  <Upload size={16} className="mr-2" /> {t('uploadPhoto')}
+                </Button>
+                <input
+                  type="file"
+                  ref={photoFileInputRef}
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handlePhotoFileUpload}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
@@ -412,13 +535,38 @@ const AdminProjectEdit = () => {
                 <CardContent className="space-y-4">
                   <div>
                     <Label htmlFor="thumbnail">{t('thumbnailUrl')}</Label>
-                    <Input
-                      id="thumbnail"
-                      name="thumbnail"
-                      value={newVideo.thumbnail}
-                      onChange={handleVideoInputChange}
-                      placeholder="Thumbnail URL"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="thumbnail"
+                        name="thumbnail"
+                        value={newVideo.thumbnail}
+                        onChange={handleVideoInputChange}
+                        placeholder="Thumbnail URL"
+                      />
+                      <Button 
+                        type="button" 
+                        onClick={() => videoThumbnailInputRef.current?.click()}
+                        className="bg-red-600 hover:bg-red-700 whitespace-nowrap"
+                      >
+                        <Upload size={16} className="mr-2" /> Upload
+                      </Button>
+                      <input
+                        type="file"
+                        ref={videoThumbnailInputRef}
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleVideoThumbnailUpload}
+                      />
+                    </div>
+                    {newVideo.thumbnail && (
+                      <div className="mt-2">
+                        <img 
+                          src={newVideo.thumbnail} 
+                          alt="Thumbnail Preview" 
+                          className="h-20 object-cover rounded border" 
+                        />
+                      </div>
+                    )}
                   </div>
                   <div>
                     <Label htmlFor="videoTitle">{t('videoTitle')}</Label>
@@ -479,7 +627,7 @@ const AdminProjectEdit = () => {
                         onClick={() => removeVideoFromProject(index)}
                         className="text-red-600 border-red-200 hover:bg-red-50"
                       >
-                        <Trash2 size={16} className="mr-2" /> {t('deleteProject')}
+                        <Trash2 size={16} className="mr-2" /> {t('delete')}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -492,6 +640,49 @@ const AdminProjectEdit = () => {
                   </div>
                 )}
               </div>
+            </TabsContent>
+
+            <TabsContent value="related" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Related Projects</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {allProjects
+                      .filter(p => p.id !== id) // Don't show current project
+                      .map(relatedProject => (
+                        <div 
+                          key={relatedProject.id} 
+                          className={`border rounded-md overflow-hidden cursor-pointer transition-all ${
+                            selectedRelatedProjects.includes(relatedProject.id) 
+                              ? 'ring-2 ring-purple-600' 
+                              : 'opacity-70 hover:opacity-100'
+                          }`}
+                          onClick={() => handleRelatedProjectToggle(relatedProject.id)}
+                        >
+                          <div className="aspect-video bg-gray-100 relative">
+                            <img 
+                              src={relatedProject.image} 
+                              alt={relatedProject.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="p-3">
+                            <h3 className="font-medium text-sm truncate">{relatedProject.title}</h3>
+                            <p className="text-xs text-gray-500">{relatedProject.category}</p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                  
+                  {allProjects.length <= 1 && (
+                    <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+                      <p>No other projects available to relate to</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>

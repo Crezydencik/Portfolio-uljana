@@ -17,8 +17,22 @@ export interface Project {
   videos?: VideoItem[];
   content: string;
   relatedProjects?: string[];
+  // New fields for file storage
+  imageFile?: File | null;
+  photoFiles?: File[];
+  thumbnailFiles?: File[];
 }
 
 export interface ProjectsData {
   [key: string]: Project;
+}
+
+export interface Skill {
+  name: string;
+  icon: React.ReactNode;
+}
+
+export interface SkillCategory {
+  title: string;
+  skills: Skill[];
 }

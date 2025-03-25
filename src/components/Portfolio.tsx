@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Film, Image } from 'lucide-react';
 import { useProjectStore } from '@/hooks/useProjectStore';
+import { Button } from './ui/button';
 
 const Portfolio = () => {
   const { t } = useTranslation();
@@ -11,10 +12,15 @@ const Portfolio = () => {
   
   // Get all projects from the store
   const allProjects = getAllProjects();
+  const [visibleCount, setVisibleCount] = useState(4);
   
-  // Only display projects in the portfolio that should be visible
-  // (For a real app, you might want to add a 'visible' flag to projects)
-  const projects = allProjects.slice(0, 4); // Limit to 4 projects on the homepage
+  // Show more projects when clicking "View More"
+  const handleShowMore = () => {
+    setVisibleCount(prevCount => prevCount + 4);
+  };
+  
+  // Display all projects, limited by visibleCount
+  const projects = allProjects.slice(0, visibleCount);
 
   return (
     <section id="portfolio" className="section-container bg-white">
@@ -86,6 +92,25 @@ const Portfolio = () => {
           </div>
         ))}
       </div>
+
+      {/* Show more button */}
+      {visibleCount < allProjects.length && (
+        <div className="text-center mt-12">
+          <Button 
+            onClick={handleShowMore}
+            className="bg-purple-600 hover:bg-purple-700"
+          >
+            {t('viewMore')}
+          </Button>
+        </div>
+      )}
+      
+      {/* No projects message */}
+      {allProjects.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500">{t('noProjects')}</p>
+        </div>
+      )}
     </section>
   );
 };
