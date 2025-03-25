@@ -36,3 +36,17 @@ export interface SkillCategory {
   title: string;
   skills: Skill[];
 }
+
+// MongoDB related interfaces
+export interface MongoDBCredentials {
+  connectionString: string;
+  database: string;
+  collection: string;
+}
+
+export interface MongoDBStatus {
+  connected: boolean;
+  database?: string;
+  collection?: string;
+  error?: string;
+}

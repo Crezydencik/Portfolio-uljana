@@ -482,12 +482,13 @@ const translations: TranslationDict = {
     pl: 'Strona internetowa',
   },
   
-  edit: {
+  // Edit and Delete (moved from being duplicated)
+  editItem: {
     en: 'Edit',
     ru: 'Редактировать',
     pl: 'Edytuj',
   },
-  delete: {
+  deleteItem: {
     en: 'Delete',
     ru: 'Удалить',
     pl: 'Usuń',
@@ -631,6 +632,73 @@ const translations: TranslationDict = {
     en: 'Video',
     ru: 'Видео',
     pl: 'Wideo',
+  },
+  
+  // MongoDB related translations
+  mongoDB: {
+    en: 'MongoDB',
+    ru: 'MongoDB',
+    pl: 'MongoDB',
+  },
+  mongoDBConnection: {
+    en: 'MongoDB Connection',
+    ru: 'Подключение к MongoDB',
+    pl: 'Połączenie MongoDB',
+  },
+  connectionString: {
+    en: 'Connection String',
+    ru: 'Строка подключения',
+    pl: 'Ciąg połączenia',
+  },
+  databaseName: {
+    en: 'Database Name',
+    ru: 'Имя базы данных',
+    pl: 'Nazwa bazy danych',
+  },
+  connect: {
+    en: 'Connect',
+    ru: 'Подключиться',
+    pl: 'Połącz',
+  },
+  connected: {
+    en: 'Connected',
+    ru: 'Подключено',
+    pl: 'Połączono',
+  },
+  connectionFailed: {
+    en: 'Connection Failed',
+    ru: 'Ошибка подключения',
+    pl: 'Błąd połączenia',
+  },
+  projects: {
+    en: 'Projects',
+    ru: 'Проекты',
+    pl: 'Projekty',
+  },
+  richTextEditor: {
+    en: 'Rich Text Editor',
+    ru: 'Редактор форматированного текста',
+    pl: 'Edytor tekstu sformatowanego',
+  },
+  alignLeft: {
+    en: 'Align Left',
+    ru: 'Выровнять по левому краю',
+    pl: 'Wyrównaj do lewej',
+  },
+  alignCenter: {
+    en: 'Align Center',
+    ru: 'Выровнять по центру',
+    pl: 'Wyrównaj do środka',
+  },
+  alignRight: {
+    en: 'Align Right',
+    ru: 'Выровнять по правому краю',
+    pl: 'Wyrównaj do prawej',
+  },
+  alignJustify: {
+    en: 'Justify',
+    ru: 'Выровнять по ширине',
+    pl: 'Wyjustuj',
   },
 };
 
