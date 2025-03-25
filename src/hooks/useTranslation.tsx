@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Define supported languages
@@ -490,5 +491,196 @@ const translations: TranslationDict = {
     en: 'Delete',
     ru: 'Удалить',
     pl: 'Usuń',
+  },
+  
+  // Skills section
+  mySkills: {
+    en: 'My Skills',
+    ru: 'Мои навыки',
+    pl: 'Moje umiejętności',
+  },
+  skillsDescription: {
+    en: 'Here are some of the skills I have developed over the years.',
+    ru: 'Вот некоторые из навыков, которые я развила за годы работы.',
+    pl: 'Oto niektóre z umiejętności, które rozwinęłam przez lata.',
+  },
+  manageSkills: {
+    en: 'Manage skills',
+    ru: 'Управление навыками',
+    pl: 'Zarządzanie umiejętnościami',
+  },
+  skillsManageDescription: {
+    en: 'Add, edit, or delete skills from your portfolio.',
+    ru: 'Добавление, редактирование или удаление навыков из вашего портфолио.',
+    pl: 'Dodawanie, edytowanie lub usuwanie umiejętności z twojego portfolio.',
+  },
+  addSkill: {
+    en: 'Add skill',
+    ru: 'Добавить навык',
+    pl: 'Dodaj umiejętność',
+  },
+  editSkill: {
+    en: 'Edit skill',
+    ru: 'Редактировать навык',
+    pl: 'Edytuj umiejętność',
+  },
+  deleteSkill: {
+    en: 'Delete skill',
+    ru: 'Удалить навык',
+    pl: 'Usuń umiejętność',
+  },
+  skillName: {
+    en: 'Skill name',
+    ru: 'Название навыка',
+    pl: 'Nazwa umiejętności',
+  },
+  skillCategory: {
+    en: 'Skill category',
+    ru: 'Категория навыка',
+    pl: 'Kategoria umiejętności',
+  },
+  addCategory: {
+    en: 'Add category',
+    ru: 'Добавить категорию',
+    pl: 'Dodaj kategorię',
+  },
+  categoryName: {
+    en: 'Category name',
+    ru: 'Название категории',
+    pl: 'Nazwa kategorii',
+  },
+  resetToDefault: {
+    en: 'Reset to default',
+    ru: 'Сбросить до настроек по умолчанию',
+    pl: 'Przywróć ustawienia domyślne',
+  },
+  cancel: {
+    en: 'Cancel',
+    ru: 'Отмена',
+    pl: 'Anuluj',
+  },
+  confirm: {
+    en: 'Confirm',
+    ru: 'Подтвердить',
+    pl: 'Potwierdź',
+  },
+  
+  // Contact section
+  getInTouch: {
+    en: 'Get in Touch',
+    ru: 'Связаться со мной',
+    pl: 'Skontaktuj się',
+  },
+  location: {
+    en: 'Location',
+    ru: 'Местоположение',
+    pl: 'Lokalizacja',
+  },
+  phone: {
+    en: 'Phone',
+    ru: 'Телефон',
+    pl: 'Telefon',
+  },
+  followMe: {
+    en: 'Follow Me',
+    ru: 'Подписывайтесь на меня',
+    pl: 'Obserwuj mnie',
+  },
+  
+  // View more/less
+  viewMore: {
+    en: 'View More',
+    ru: 'Показать больше',
+    pl: 'Zobacz więcej',
+  },
+  viewLess: {
+    en: 'View Less',
+    ru: 'Показать меньше',
+    pl: 'Zobacz mniej',
+  },
+  
+  // Footer
+  footerTagline: {
+    en: 'Journalist, Content Creator & Marketer',
+    ru: 'Журналист, Создатель контента и Маркетолог',
+    pl: 'Dziennikarz, Twórca treści i Marketer',
+  },
+  allRightsReserved: {
+    en: 'All Rights Reserved',
+    ru: 'Все права защищены',
+    pl: 'Wszelkie prawa zastrzeżone',
+  },
+  
+  // Portfolio section
+  viewAll: {
+    en: 'View All',
+    ru: 'Смотреть все',
+    pl: 'Zobacz wszystko',
+  },
+  noProjects: {
+    en: 'No projects available.',
+    ru: 'Нет доступных проектов.',
+    pl: 'Brak dostępnych projektów.',
+  },
+  photo: {
+    en: 'Photo',
+    ru: 'Фото',
+    pl: 'Zdjęcie',
+  },
+  video: {
+    en: 'Video',
+    ru: 'Видео',
+    pl: 'Wideo',
+  },
+};
 
+// Create context
+interface TranslationContextType {
+  t: (key: string) => string;
+  language: SupportedLanguage;
+  setLanguage: (lang: SupportedLanguage) => void;
+}
 
+const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+
+// Provider component
+interface TranslationProviderProps {
+  children: ReactNode;
+}
+
+export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children }) => {
+  const [language, setLanguage] = useState<SupportedLanguage>(() => {
+    // Try to get language from localStorage
+    const savedLanguage = localStorage.getItem('language') as SupportedLanguage;
+    return savedLanguage || 'en'; // Default to English
+  });
+
+  // Translation function
+  const t = (key: string): string => {
+    if (!translations[key]) {
+      console.warn(`Translation key "${key}" not found.`);
+      return key;
+    }
+    return translations[key][language] || translations[key].en; // Fallback to English
+  };
+
+  // Update localStorage when language changes
+  React.useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  return (
+    <TranslationContext.Provider value={{ t, language, setLanguage }}>
+      {children}
+    </TranslationContext.Provider>
+  );
+};
+
+// Hook for using translations
+export const useTranslation = (): TranslationContextType => {
+  const context = useContext(TranslationContext);
+  if (context === undefined) {
+    throw new Error('useTranslation must be used within a TranslationProvider');
+  }
+  return context;
+};
