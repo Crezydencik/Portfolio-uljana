@@ -17,7 +17,7 @@ export interface Project {
   videos?: VideoItem[];
   content: string;
   relatedProjects?: string[];
-  // New fields for file storage
+  // Fields for file storage
   imageFile?: File | null;
   photoFiles?: File[];
   thumbnailFiles?: File[];
@@ -49,4 +49,10 @@ export interface MongoDBStatus {
   database?: string;
   collection?: string;
   error?: string;
+}
+
+export interface MongoDBProject extends Project {
+  _id?: string;  // MongoDB document ID
+  createdAt?: string;
+  updatedAt?: string;
 }

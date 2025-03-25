@@ -14,6 +14,7 @@ const MongoDBConfig = () => {
   const { t } = useTranslation();
   const [connectionString, setConnectionString] = useState('mongodb://localhost:27017');
   const [dbName, setDbName] = useState('portfolio');
+  const [collection, setCollection] = useState('projects');
   const [isConnected, setIsConnected] = useState(false);
   const { useMongoDBBackend, setUseMongoDBBackend } = useProjectStore();
   
@@ -27,13 +28,16 @@ const MongoDBConfig = () => {
       if (config) {
         setConnectionString(config.connectionString);
         setDbName(config.dbName);
+        if (config.collection) {
+          setCollection(config.collection);
+        }
       }
     }
   }, []);
   
   const handleConnect = async () => {
     const mongoService = MongoDBService.getInstance();
-    const success = await mongoService.connect(connectionString, dbName);
+    const success = await mongoService.connect(connectionString, dbName, collection);
     setIsConnected(success);
   };
   
@@ -56,7 +60,7 @@ const MongoDBConfig = () => {
           {t('mongoDBConnection')}
         </CardTitle>
         <CardDescription>
-          {t('databaseName')}
+          {t('databaseConfig')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -79,6 +83,17 @@ const MongoDBConfig = () => {
             onChange={(e) => setDbName(e.target.value)}
             disabled={isConnected}
             placeholder="portfolio"
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="collection">{t('collectionName')}</Label>
+          <Input
+            id="collection"
+            value={collection}
+            onChange={(e) => setCollection(e.target.value)}
+            disabled={isConnected}
+            placeholder="projects"
           />
         </div>
         
@@ -106,7 +121,7 @@ const MongoDBConfig = () => {
           </Button>
         ) : (
           <Button onClick={handleDisconnect} variant="destructive" className="w-full">
-            Disconnect
+            {t('disconnect')}
           </Button>
         )}
       </CardFooter>

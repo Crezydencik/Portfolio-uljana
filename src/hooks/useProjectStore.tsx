@@ -42,6 +42,11 @@ export const useProjectStore = create<ProjectState>()(
             title: "MongoDB Enabled",
             description: "Now using MongoDB as backend for projects",
           });
+        } else {
+          toast({
+            title: "Local Storage Enabled",
+            description: "Now using local storage as backend for projects",
+          });
         }
       },
       
@@ -56,12 +61,22 @@ export const useProjectStore = create<ProjectState>()(
           }
         }));
         
-        // If MongoDB is enabled, log that we would save to MongoDB
+        // If MongoDB is enabled, save to MongoDB
         if (useMongoDBBackend) {
-          console.log("Would save to MongoDB:", project);
+          const mongoService = MongoDBService.getInstance();
+          mongoService.saveProject(project).then((success) => {
+            if (!success) {
+              toast({
+                title: "Warning",
+                description: "Project saved locally but failed to save to MongoDB",
+                variant: "destructive",
+              });
+            }
+          });
+        } else {
           toast({
             title: "Project Added",
-            description: "Project saved to MongoDB",
+            description: "Project saved to local storage",
           });
         }
       },
@@ -77,12 +92,22 @@ export const useProjectStore = create<ProjectState>()(
           }
         }));
         
-        // If MongoDB is enabled, log that we would update in MongoDB
+        // If MongoDB is enabled, update in MongoDB
         if (useMongoDBBackend) {
-          console.log("Would update in MongoDB:", project);
+          const mongoService = MongoDBService.getInstance();
+          mongoService.updateProject(project).then((success) => {
+            if (!success) {
+              toast({
+                title: "Warning",
+                description: "Project updated locally but failed to update in MongoDB",
+                variant: "destructive",
+              });
+            }
+          });
+        } else {
           toast({
             title: "Project Updated",
-            description: "Project updated in MongoDB",
+            description: "Project updated in local storage",
           });
         }
       },
@@ -97,12 +122,22 @@ export const useProjectStore = create<ProjectState>()(
           return { projects: newProjects };
         });
         
-        // If MongoDB is enabled, log that we would delete from MongoDB
+        // If MongoDB is enabled, delete from MongoDB
         if (useMongoDBBackend) {
-          console.log("Would delete from MongoDB:", projectId);
+          const mongoService = MongoDBService.getInstance();
+          mongoService.deleteProject(projectId).then((success) => {
+            if (!success) {
+              toast({
+                title: "Warning",
+                description: "Project deleted locally but failed to delete from MongoDB",
+                variant: "destructive",
+              });
+            }
+          });
+        } else {
           toast({
             title: "Project Deleted",
-            description: "Project removed from MongoDB",
+            description: "Project removed from local storage",
           });
         }
       },
@@ -117,6 +152,10 @@ export const useProjectStore = create<ProjectState>()(
       
       resetToInitial: () => {
         set({ projects: initialProjectsData });
+        toast({
+          title: "Reset Complete",
+          description: "Projects have been reset to initial data",
+        });
       }
     }),
     {
