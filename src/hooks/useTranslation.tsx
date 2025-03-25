@@ -1,616 +1,328 @@
 
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-// Define Language type directly instead of importing from next-international
-type Language = 'en' | 'ru' | 'pl';
+// Определение типа для контекста перевода
+interface TranslationContextType {
+  t: (key: string) => string;
+  language: 'ru' | 'en';
+  setLanguage: (lang: 'ru' | 'en') => void;
+}
 
-// Type for all possible translation keys
-export type TranslationKey = 
-  | 'notFound'
-  | 'backToHome'
-  | 'notFoundMessage'
-  | 'projectNotFoundMessage'
-  | 'backHome'
-  | 'home'
-  | 'about'
-  | 'skills'
-  | 'portfolio'
-  | 'contact'
-  | 'certificates'
-  | 'downloadCV'
-  | 'viewAllProjects'
-  | 'viewProject'
-  | 'viewAll'
-  | 'allProjects'
-  | 'photoProjects'
-  | 'videoProjects'
-  | 'designProjects'
-  | 'projectDetails'
-  | 'client'
-  | 'date'
-  | 'category'
-  | 'brief'
-  | 'viewWebsite'
-  | 'relatedProjects'
-  | 'related'
-  | 'backToProjects'
-  | 'aboutMe'
-  | 'getInTouch'
-  | 'contactDescription'
-  | 'contactInformation'
-  | 'email'
-  | 'phone'
-  | 'location'
-  | 'followMe'
-  | 'loginToAdmin'
-  | 'username'
-  | 'password'
-  | 'signIn'
-  | 'signOut'
-  | 'projectId'
-  | 'title'
-  | 'content'
-  | 'projectContent'
-  | 'image'
-  | 'author'
-  | 'actions'
-  | 'addProject'
-  | 'deleteProject'
-  | 'cancel'
-  | 'save'
-  | 'add'
-  | 'delete'
-  | 'editProject'
-  | 'createProject'
-  | 'projectTitle'
-  | 'projectSlug'
-  | 'projectCategory'
-  | 'projectDate'
-  | 'projectBrief'
-  | 'projectClient'
-  | 'projectWebsite'
-  | 'mediaType'
-  | 'photo'
-  | 'video'
-  | 'adminDashboard'
-  | 'adminPanel'
-  | 'projects'
-  | 'manageProjects'
-  | 'invalidCredentials'
-  | 'login'
-  // Ключи для журналистики и навыков
-  | 'journalism'
-  | 'newsWriting'
-  | 'interviewing'
-  | 'research'
-  | 'storytelling'
-  | 'videoEditing'
-  | 'adobePremiere'
-  | 'cinematography'
-  | 'marketing'
-  | 'contentStrategy'
-  | 'socialMedia'
-  | 'seo'
-  | 'analytics'
-  | 'mySkills'
-  | 'skillsDescription'
-  // Новые ключи для видео
-  | 'addPhoto'
-  | 'addVideo'
-  | 'thumbnailUrl'
-  | 'videoTitle'
-  | 'duration'
-  // Ключи для футера
-  | 'footerTagline'
-  | 'allRightsReserved'
-  // Новые ключи для сертификатов
-  | 'manageCertificates'
-  | 'addCertificate'
-  | 'editCertificate'
-  | 'certificateTitle'
-  | 'institution'
-  | 'year'
-  | 'description'
-  | 'noCertificatesFound'
-  | 'areYouSure'
-  | 'deleteConfirmation'
-  | 'certificateFormDescription'
-  // Ключи для информации об авторе
-  | 'manageAuthorInfo'
-  | 'authorInformation'
-  | 'authorInfoDescription'
-  | 'authorTitle'
-  | 'authorTitleDescription'
-  | 'firstParagraph'
-  | 'secondParagraph'
-  // Ключи для контактной информации
-  | 'manageContactInfo'
-  | 'contactInfoDescription'
-  | 'basicContactInfo'
-  | 'socialMedia'
-  | 'phoneOptional'
-  | 'locationOptional'
-  // Ключи для карточек на панели администратора
-  | 'certificatesManageDescription'
-  | 'aboutManageDescription'
-  | 'contactManageDescription'
-  | 'projectsManageDescription';
+// Создание контекста с начальным значением
+const TranslationContext = createContext<TranslationContextType>({
+  t: (key: string) => key,
+  language: 'en',
+  setLanguage: () => {},
+});
 
-// Context to store the current language and translation functions
-type TranslationContextType = {
-  t: (key: TranslationKey) => string;
-  lang: Language;
-  setLang: (lang: Language) => void;
-  toggleLang: () => void;
-  allLangs: Language[];
-  // Добавляем поддержку для Header.tsx
-  language: Language;
-  setLanguage: (lang: Language) => void;
+// Словарь переводов
+const translations: Record<string, Record<string, string>> = {
+  en: {
+    // Home page
+    home: 'Home',
+    aboutMe: 'About me',
+    portfolio: 'Portfolio',
+    skills: 'Skills',
+    certificates: 'Certificates',
+    contact: 'Contact',
+    contactMe: 'Contact me',
+    learnMore: 'Learn more',
+    
+    // Hero section
+    heroTitle: 'Hello!',
+    heroDescription: 'I am a journalist, content creator and marketer with a passion for writing and creating engaging content. Welcome to my portfolio!',
+    viewPortfolio: 'View portfolio',
+    
+    // Projects
+    allProjects: 'All projects',
+    viewProject: 'View project',
+    projectsTitle: 'My projects',
+    projectsDescription: 'Here are some of my most recent projects. Click on a project to learn more about it.',
+    technologies: 'Technologies',
+    challenge: 'Challenge',
+    solution: 'Solution',
+    result: 'Result',
+    relatedProjects: 'Related projects',
+    
+    // Skills section
+    skillsTitle: 'My skills',
+    skillsDescription: 'Here are some of the skills I have developed over the years.',
+    
+    // Certificates section
+    certificatesTitle: 'My certificates',
+    certificatesDescription: 'Here are some of the certificates I have earned.',
+    
+    // Contact section
+    contactTitle: 'Get in touch',
+    contactDescription: 'Feel free to contact me if you have any questions or opportunities.',
+    yourName: 'Your name',
+    yourEmail: 'Your email',
+    yourMessage: 'Your message',
+    send: 'Send',
+    messageSent: 'Message sent successfully!',
+    messageFailed: 'Failed to send message. Please try again.',
+    fieldsRequired: 'All fields are required.',
+    invalidEmail: 'Please enter a valid email address.',
+    
+    // Footer
+    copyright: '© 2023 Portfolio. All rights reserved.',
+    
+    // 404 page
+    pageNotFound: 'Page not found',
+    goBackHome: 'Go back home',
+    
+    // Admin
+    signIn: 'Sign in',
+    signOut: 'Sign out',
+    email: 'Email',
+    password: 'Password',
+    login: 'Login',
+    adminPanel: 'Admin panel',
+    adminDashboard: 'Admin dashboard',
+    manageProjects: 'Manage projects',
+    projectsManageDescription: 'Add, edit, or delete projects from your portfolio.',
+    manageCertificates: 'Manage certificates',
+    certificatesManageDescription: 'Add, edit, or delete certificates from your portfolio.',
+    manageAuthorInfo: 'Manage author info',
+    aboutManageDescription: 'Update your personal information and about section.',
+    manageContactInfo: 'Manage contact info',
+    contactManageDescription: 'Update your contact information and social media links.',
+    save: 'Save',
+    
+    addProject: 'Add project',
+    editProject: 'Edit project',
+    deleteProject: 'Delete project',
+    projectName: 'Project name',
+    projectDescription: 'Project description',
+    projectCategory: 'Project category',
+    projectChallengeDescription: 'Project challenge description',
+    projectSolutionDescription: 'Project solution description',
+    projectResultDescription: 'Project result description',
+    projectTechnologies: 'Project technologies',
+    projectImage: 'Project image',
+    projectDemo: 'Project demo',
+    projectGithub: 'Project GitHub',
+    
+    addCertificate: 'Add certificate',
+    editCertificate: 'Edit certificate',
+    deleteCertificate: 'Delete certificate',
+    certificateName: 'Certificate name',
+    certificateIssuer: 'Certificate issuer',
+    certificateDate: 'Certificate date',
+    certificateImage: 'Certificate image',
+    
+    authorInformation: 'Author information',
+    authorTitle: 'Professional title',
+    authorTitleDescription: 'Your professional title or tagline',
+    firstParagraph: 'First paragraph',
+    secondParagraph: 'Second paragraph',
+    name: 'Name',
+    
+    contactInformation: 'Contact information',
+    contactInfoDescription: 'Your contact details and social media links',
+    phoneNumber: 'Phone number',
+    address: 'Address',
+    linkedin: 'LinkedIn',
+    twitter: 'Twitter',
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    github: 'GitHub',
+    website: 'Website',
+    
+    edit: 'Edit',
+    delete: 'Delete',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    deleteConfirmation: 'Are you sure you want to delete this item?',
+    noData: 'No data to display',
+    
+    // CRUD operations
+    saveChanges: 'Save changes',
+    addNew: 'Add new',
+    imageUpload: 'Upload image',
+    dragAndDrop: 'Drag and drop files here, or click to select files',
+    imageRequired: 'Image is required',
+    
+    // Visual text editor
+    bold: 'Bold',
+    italic: 'Italic',
+    underline: 'Underline',
+    bulletList: 'Bullet list',
+    numberedList: 'Numbered list',
+    heading1: 'Heading 1',
+    heading2: 'Heading 2',
+    heading3: 'Heading 3',
+    link: 'Link',
+    unlink: 'Remove link',
+    alignLeft: 'Align left',
+    alignCenter: 'Align center',
+    alignRight: 'Align right',
+    alignJustify: 'Justify',
+  },
+  
+  ru: {
+    // Home page
+    home: 'Главная',
+    aboutMe: 'Обо мне',
+    portfolio: 'Портфолио',
+    skills: 'Навыки',
+    certificates: 'Сертификаты',
+    contact: 'Контакты',
+    contactMe: 'Связаться со мной',
+    learnMore: 'Узнать больше',
+    
+    // Hero section
+    heroTitle: 'Привет!',
+    heroDescription: 'Я журналист, создатель контента и маркетолог с страстью к написанию и созданию увлекательного контента. Добро пожаловать в моё портфолио!',
+    viewPortfolio: 'Смотреть портфолио',
+    
+    // Projects
+    allProjects: 'Все проекты',
+    viewProject: 'Посмотреть проект',
+    projectsTitle: 'Мои проекты',
+    projectsDescription: 'Вот некоторые из моих недавних проектов. Нажмите на проект, чтобы узнать о нем больше.',
+    technologies: 'Технологии',
+    challenge: 'Задача',
+    solution: 'Решение',
+    result: 'Результат',
+    relatedProjects: 'Похожие проекты',
+    
+    // Skills section
+    skillsTitle: 'Мои навыки',
+    skillsDescription: 'Вот некоторые из навыков, которые я приобрела за годы работы.',
+    
+    // Certificates section
+    certificatesTitle: 'Мои сертификаты',
+    certificatesDescription: 'Вот некоторые из сертификатов, которые я получила.',
+    
+    // Contact section
+    contactTitle: 'Свяжитесь со мной',
+    contactDescription: 'Не стесняйтесь обращаться ко мне, если у вас есть вопросы или предложения.',
+    yourName: 'Ваше имя',
+    yourEmail: 'Ваш email',
+    yourMessage: 'Ваше сообщение',
+    send: 'Отправить',
+    messageSent: 'Сообщение успешно отправлено!',
+    messageFailed: 'Не удалось отправить сообщение. Пожалуйста, попробуйте еще раз.',
+    fieldsRequired: 'Все поля обязательны для заполнения.',
+    invalidEmail: 'Пожалуйста, введите корректный email адрес.',
+    
+    // Footer
+    copyright: '© 2023 Портфолио. Все права защищены.',
+    
+    // 404 page
+    pageNotFound: 'Страница не найдена',
+    goBackHome: 'Вернуться на главную',
+    
+    // Admin
+    signIn: 'Войти',
+    signOut: 'Выйти',
+    email: 'Email',
+    password: 'Пароль',
+    login: 'Войти',
+    adminPanel: 'Панель администратора',
+    adminDashboard: 'Панель управления',
+    manageProjects: 'Управление проектами',
+    projectsManageDescription: 'Добавление, редактирование или удаление проектов из вашего портфолио.',
+    manageCertificates: 'Управление сертификатами',
+    certificatesManageDescription: 'Добавление, редактирование или удаление сертификатов из вашего портфолио.',
+    manageAuthorInfo: 'Управление информацией об авторе',
+    aboutManageDescription: 'Обновление вашей личной информации и раздела "Обо мне".',
+    manageContactInfo: 'Управление контактной информацией',
+    contactManageDescription: 'Обновление контактной информации и ссылок на социальные сети.',
+    save: 'Сохранить',
+    
+    addProject: 'Добавить проект',
+    editProject: 'Редактировать проект',
+    deleteProject: 'Удалить проект',
+    projectName: 'Название проекта',
+    projectDescription: 'Описание проекта',
+    projectCategory: 'Категория проекта',
+    projectChallengeDescription: 'Описание задачи проекта',
+    projectSolutionDescription: 'Описание решения проекта',
+    projectResultDescription: 'Описание результата проекта',
+    projectTechnologies: 'Технологии проекта',
+    projectImage: 'Изображение проекта',
+    projectDemo: 'Демо проекта',
+    projectGithub: 'GitHub проекта',
+    
+    addCertificate: 'Добавить сертификат',
+    editCertificate: 'Редактировать сертификат',
+    deleteCertificate: 'Удалить сертификат',
+    certificateName: 'Название сертификата',
+    certificateIssuer: 'Издатель сертификата',
+    certificateDate: 'Дата сертификата',
+    certificateImage: 'Изображение сертификата',
+    
+    authorInformation: 'Информация об авторе',
+    authorTitle: 'Профессиональное звание',
+    authorTitleDescription: 'Ваше профессиональное звание или слоган',
+    firstParagraph: 'Первый параграф',
+    secondParagraph: 'Второй параграф',
+    name: 'Имя',
+    
+    contactInformation: 'Контактная информация',
+    contactInfoDescription: 'Ваши контактные данные и ссылки на социальные сети',
+    phoneNumber: 'Номер телефона',
+    address: 'Адрес',
+    linkedin: 'LinkedIn',
+    twitter: 'Twitter',
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    github: 'GitHub',
+    website: 'Веб-сайт',
+    
+    edit: 'Редактировать',
+    delete: 'Удалить',
+    cancel: 'Отмена',
+    confirm: 'Подтвердить',
+    deleteConfirmation: 'Вы уверены, что хотите удалить этот элемент?',
+    noData: 'Нет данных для отображения',
+    
+    // CRUD operations
+    saveChanges: 'Сохранить изменения',
+    addNew: 'Добавить новый',
+    imageUpload: 'Загрузить изображение',
+    dragAndDrop: 'Перетащите файлы сюда или нажмите, чтобы выбрать файлы',
+    imageRequired: 'Изображение обязательно',
+    
+    // Visual text editor
+    bold: 'Жирный',
+    italic: 'Курсив',
+    underline: 'Подчеркнутый',
+    bulletList: 'Маркированный список',
+    numberedList: 'Нумерованный список',
+    heading1: 'Заголовок 1',
+    heading2: 'Заголовок 2',
+    heading3: 'Заголовок 3',
+    link: 'Ссылка',
+    unlink: 'Удалить ссылку',
+    alignLeft: 'По левому краю',
+    alignCenter: 'По центру',
+    alignRight: 'По правому краю',
+    alignJustify: 'По ширине',
+  },
 };
 
-// Our translations context
-const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+// Создание провайдера для компонента перевода
+interface TranslationProviderProps {
+  children: ReactNode;
+}
 
-// Provider component that wraps app and makes translation available to every component
-export function TranslationProvider({ children }: { children: React.ReactNode }) {
-  // We get the preferred language from localStorage if available
-  const getInitialLang = (): Language => {
-    if (typeof window !== 'undefined') {
-      const savedLang = localStorage.getItem('language');
-      if (savedLang && (savedLang === 'en' || savedLang === 'ru' || savedLang === 'pl')) {
-        return savedLang;
-      }
-      
-      // Use browser language as fallback
-      const browserLang = navigator.language.split('-')[0];
-      if (browserLang === 'ru') return 'ru';
-      if (browserLang === 'pl') return 'pl';
-    }
-    return 'en'; // Default language
-  };
-
-  const [lang, setLangState] = useState<Language>(getInitialLang);
-  const allLangs: Language[] = ['en', 'ru', 'pl'];
+export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children }) => {
+  const [language, setLanguage] = useState<'ru' | 'en'>('en');
   
-  // Update localStorage when language changes
-  const setLang = (newLang: Language) => {
-    setLangState(newLang);
-    localStorage.setItem('language', newLang);
+  // Функция для получения перевода по ключу
+  const t = (key: string): string => {
+    return translations[language][key] || key;
   };
   
-  // Toggle between languages
-  const toggleLang = () => {
-    const currentIndex = allLangs.indexOf(lang);
-    const nextIndex = (currentIndex + 1) % allLangs.length;
-    setLang(allLangs[nextIndex]);
-  };
-  
-  // Translation function
-  const t = (key: TranslationKey): string => {
-    return translations[lang][key] || key;
-  };
-  
-  // Values for our context
-  const contextValue: TranslationContextType = {
-    t,
-    lang,
-    setLang,
-    toggleLang,
-    allLangs,
-    language: lang,       // Добавляем для поддержки Header.tsx
-    setLanguage: setLang  // Добавляем для поддержки Header.tsx
-  };
-  
-  // Provide the context to children
   return (
-    <TranslationContext.Provider value={contextValue}>
+    <TranslationContext.Provider value={{ t, language, setLanguage }}>
       {children}
     </TranslationContext.Provider>
   );
-}
-
-// Custom hook to use translations
-export function useTranslation() {
-  const context = useContext(TranslationContext);
-  if (!context) {
-    throw new Error('useTranslation must be used within a TranslationProvider');
-  }
-  return context;
-}
-
-// Our translations object
-const translations = {
-  en: {
-    notFound: "Page Not Found",
-    backToHome: "Back to Home",
-    backHome: "Back to Home",
-    notFoundMessage: "The page you are looking for does not exist. It might have been moved or deleted.",
-    projectNotFoundMessage: "The project you are looking for does not exist.",
-    home: "Home",
-    about: "About",
-    skills: "Skills",
-    portfolio: "Portfolio",
-    contact: "Contact",
-    certificates: "Certificates",
-    downloadCV: "Download CV",
-    viewAllProjects: "View All Projects",
-    viewProject: "View Project",
-    viewAll: "View All",
-    allProjects: "All Projects",
-    photoProjects: "Photo",
-    videoProjects: "Video",
-    designProjects: "Design",
-    projectDetails: "Project Details",
-    client: "Client",
-    date: "Date",
-    category: "Category",
-    brief: "Brief",
-    viewWebsite: "View Website",
-    relatedProjects: "Related Projects",
-    related: "Related Projects",
-    backToProjects: "Back to Projects",
-    aboutMe: "About Me",
-    getInTouch: "Get In Touch",
-    contactDescription: "Have a project in mind or want to say hello? Feel free to reach out!",
-    contactInformation: "Contact Information",
-    email: "Email",
-    phone: "Phone",
-    location: "Location",
-    followMe: "Follow Me",
-    loginToAdmin: "Login to Admin Panel",
-    login: "Login",
-    username: "Username",
-    password: "Password",
-    signIn: "Sign In",
-    signOut: "Sign Out",
-    projectId: "ID",
-    title: "Title",
-    content: "Content",
-    projectContent: "Project Content",
-    image: "Image",
-    author: "Author",
-    actions: "Actions",
-    addProject: "Add Project",
-    deleteProject: "Delete Project",
-    cancel: "Cancel",
-    save: "Save",
-    add: "Add",
-    delete: "Delete",
-    editProject: "Edit Project",
-    createProject: "Create Project",
-    projectTitle: "Project Title",
-    projectSlug: "Project Slug",
-    projectCategory: "Category",
-    projectDate: "Date",
-    projectBrief: "Brief",
-    projectClient: "Client",
-    projectWebsite: "Website URL",
-    mediaType: "Media Type",
-    photo: "Photo",
-    video: "Video",
-    adminDashboard: "Admin Dashboard",
-    adminPanel: "Admin Panel",
-    projects: "Projects",
-    manageProjects: "Manage Projects",
-    invalidCredentials: "Invalid credentials. Please try again.",
-    // Ключи для навыков
-    journalism: "Journalism",
-    newsWriting: "News Writing",
-    interviewing: "Interviewing",
-    research: "Research",
-    storytelling: "Storytelling",
-    videoEditing: "Video Editing",
-    adobePremiere: "Adobe Premiere Pro",
-    cinematography: "Cinematography",
-    marketing: "Marketing",
-    contentStrategy: "Content Strategy",
-    socialMedia: "Social Media",
-    seo: "SEO",
-    analytics: "Analytics",
-    mySkills: "My Skills",
-    skillsDescription: "Here are some of the skills I've developed throughout my career",
-    // Ключи для видео
-    addPhoto: "Add Photo",
-    addVideo: "Add Video",
-    thumbnailUrl: "Thumbnail URL",
-    videoTitle: "Video Title",
-    duration: "Duration",
-    // Ключи для футера
-    footerTagline: "Journalism | Content | Video",
-    allRightsReserved: "All Rights Reserved",
-    // Новые переводы для сертификатов
-    manageCertificates: "Manage Certificates",
-    addCertificate: "Add Certificate",
-    editCertificate: "Edit Certificate",
-    certificateTitle: "Certificate Title",
-    institution: "Institution",
-    year: "Year",
-    description: "Description",
-    noCertificatesFound: "No certificates found. Add a new certificate to get started.",
-    areYouSure: "Are you sure?",
-    deleteConfirmation: "This action cannot be undone. This will permanently delete the item.",
-    certificateFormDescription: "Enter the details of the certificate.",
-    // Переводы для информации об авторе
-    manageAuthorInfo: "Manage Author Information",
-    authorInformation: "Author Information",
-    authorInfoDescription: "Update your personal information displayed in the About section.",
-    authorTitle: "Title / Headline",
-    authorTitleDescription: "A short professional headline that appears at the top of your About section.",
-    firstParagraph: "First Paragraph",
-    secondParagraph: "Second Paragraph",
-    // Переводы для контактной информации
-    manageContactInfo: "Manage Contact Information",
-    contactInfoDescription: "Update your contact details and social media links.",
-    basicContactInfo: "Basic Contact Information",
-    socialMedia: "Social Media Links",
-    phoneOptional: "Optional. Leave blank to hide from the contact section.",
-    locationOptional: "Optional. Leave blank to hide from the contact section.",
-    // Переводы для карточек на панели администратора
-    certificatesManageDescription: "Add, edit, or remove certificates and qualifications.",
-    aboutManageDescription: "Update your personal information in the About section.",
-    contactManageDescription: "Manage contact details and social media links.",
-    projectsManageDescription: "Add, edit, or remove projects from your portfolio."
-  },
-  ru: {
-    notFound: "Страница не найдена",
-    backToHome: "На главную",
-    backHome: "На главную",
-    notFoundMessage: "Страница, которую вы ищете, не существует. Возможно, она была перемещена или удалена.",
-    projectNotFoundMessage: "Проект, который вы ищете, не существует.",
-    home: "Главная",
-    about: "Обо мне",
-    skills: "Навыки",
-    portfolio: "Портфолио",
-    contact: "Контакты",
-    certificates: "Сертификаты",
-    downloadCV: "Скачать резюме",
-    viewAllProjects: "Все проекты",
-    viewProject: "Просмотр проекта",
-    viewAll: "Смотреть все",
-    allProjects: "Все проекты",
-    photoProjects: "Фото",
-    videoProjects: "Видео",
-    designProjects: "Дизайн",
-    projectDetails: "Детали проекта",
-    client: "Клиент",
-    date: "Дата",
-    category: "Категория",
-    brief: "Описание",
-    viewWebsite: "Перейти на сайт",
-    relatedProjects: "Похожие проекты",
-    related: "Похожие проекты",
-    backToProjects: "Назад к проектам",
-    aboutMe: "Обо мне",
-    getInTouch: "Связаться со мной",
-    contactDescription: "Есть проект или просто хотите поздороваться? Свяжитесь со мной!",
-    contactInformation: "Контактная информация",
-    email: "Электронная почта",
-    phone: "Телефон",
-    location: "Местоположение",
-    followMe: "Социальные сети",
-    loginToAdmin: "Вход в панель администратора",
-    login: "Вход",
-    username: "Имя пользователя",
-    password: "Пароль",
-    signIn: "Войти",
-    signOut: "Выйти",
-    projectId: "ID",
-    title: "Название",
-    content: "Содержание",
-    projectContent: "Содержание проекта",
-    image: "Изображение",
-    author: "Автор",
-    actions: "Действия",
-    addProject: "Добавить проект",
-    deleteProject: "Удалить проект",
-    cancel: "Отмена",
-    save: "Сохранить",
-    add: "Добавить",
-    delete: "Удалить",
-    editProject: "Редактировать проект",
-    createProject: "Создать проект",
-    projectTitle: "Название проекта",
-    projectSlug: "Slug проекта",
-    projectCategory: "Категория",
-    projectDate: "Дата",
-    projectBrief: "Описание",
-    projectClient: "Клиент",
-    projectWebsite: "URL сайта",
-    mediaType: "Тип медиа",
-    photo: "Фото",
-    video: "Видео",
-    adminDashboard: "Панель управления",
-    adminPanel: "Панель администратора",
-    projects: "Проекты",
-    manageProjects: "Управление проектами",
-    invalidCredentials: "Неверные учетные данные. Пожалуйста, попробуйте снова.",
-    // Ключи для навыков
-    journalism: "Журналистика",
-    newsWriting: "Новостные статьи",
-    interviewing: "Интервьюирование",
-    research: "Исследования",
-    storytelling: "Сторителлинг",
-    videoEditing: "Видеомонтаж",
-    adobePremiere: "Adobe Premiere Pro",
-    cinematography: "Кинематография",
-    marketing: "Маркетинг",
-    contentStrategy: "Контент-стратегия",
-    socialMedia: "Социальные сети",
-    seo: "SEO-оптимизация",
-    analytics: "Аналитика",
-    mySkills: "Мои навыки",
-    skillsDescription: "Вот некоторые из навыков, которые я развила за время своей карьеры",
-    // Ключи для видео
-    addPhoto: "Добавить фото",
-    addVideo: "Добавить видео",
-    thumbnailUrl: "URL миниатюры",
-    videoTitle: "Название видео",
-    duration: "Продолжительность",
-    // Ключи для футера
-    footerTagline: "Журналистика | Контент | Видео",
-    allRightsReserved: "Все права защищены",
-    // Новые переводы для сертификатов
-    manageCertificates: "Управление сертификатами",
-    addCertificate: "Добавить сертификат",
-    editCertificate: "Редактировать сертификат",
-    certificateTitle: "Название сертификата",
-    institution: "Учреждение",
-    year: "Год",
-    description: "Описание",
-    noCertificatesFound: "Сертификаты не найдены. Добавьте новый сертификат, чтобы начать.",
-    areYouSure: "Вы уверены?",
-    deleteConfirmation: "Это действие нельзя отменить. Элемент будет удален навсегда.",
-    certificateFormDescription: "Введите детали сертификата.",
-    // Переводы для информации об авторе
-    manageAuthorInfo: "Управление информацией об авторе",
-    authorInformation: "Информация об авторе",
-    authorInfoDescription: "Обновите вашу личную информацию, отображаемую в разделе 'Обо мне'.",
-    authorTitle: "Заголовок / Профессия",
-    authorTitleDescription: "Краткое профессиональное описание, которое отображается в начале раздела 'Обо мне'.",
-    firstParagraph: "Первый абзац",
-    secondParagraph: "Второй абзац",
-    // Переводы для контактной информации
-    manageContactInfo: "Управление контактной информацией",
-    contactInfoDescription: "Обновите ваши контактные данные и ссылки на социальные сети.",
-    basicContactInfo: "Основная контактная информация",
-    socialMedia: "Ссылки на социальные сети",
-    phoneOptional: "Необязательно. Оставьте пустым, чтобы скрыть из раздела контактов.",
-    locationOptional: "Необязательно. Оставьте пустым, чтобы скрыть из раздела контактов.",
-    // Переводы для карточек на панели администратора
-    certificatesManageDescription: "Добавление, редактирование или удаление сертификатов и квалификаций.",
-    aboutManageDescription: "Обновление персональной информации в разделе 'Обо мне'.",
-    contactManageDescription: "Управление контактными данными и ссылками на социальные сети.",
-    projectsManageDescription: "Добавление, редактирование или удаление проектов в вашем портфолио."
-  },
-  pl: {
-    notFound: "Strona nie znaleziona",
-    backToHome: "Powrót do strony głównej",
-    backHome: "Powrót do strony głównej",
-    notFoundMessage: "Strona, której szukasz, nie istnieje. Mogła zostać przeniesiona lub usunięta.",
-    projectNotFoundMessage: "Projekt, którego szukasz, nie istnieje.",
-    home: "Strona główna",
-    about: "O mnie",
-    skills: "Umiejętności",
-    portfolio: "Portfolio",
-    contact: "Kontakt",
-    certificates: "Certyfikaty",
-    downloadCV: "Pobierz CV",
-    viewAllProjects: "Zobacz wszystkie projekty",
-    viewProject: "Zobacz projekt",
-    viewAll: "Zobacz wszystkie",
-    allProjects: "Wszystkie projekty",
-    photoProjects: "Zdjęcia",
-    videoProjects: "Wideo",
-    designProjects: "Design",
-    projectDetails: "Szczegóły projektu",
-    client: "Klient",
-    date: "Data",
-    category: "Kategoria",
-    brief: "Opis",
-    viewWebsite: "Zobacz stronę",
-    relatedProjects: "Powiązane projekty",
-    related: "Powiązane projekty",
-    backToProjects: "Powrót do projektów",
-    aboutMe: "O mnie",
-    getInTouch: "Skontaktuj się",
-    contactDescription: "Masz pomysł na projekt lub chcesz się przywitać? Skontaktuj się ze mną!",
-    contactInformation: "Informacje kontaktowe",
-    email: "Email",
-    phone: "Telefon",
-    location: "Lokalizacja",
-    followMe: "Obserwuj mnie",
-    loginToAdmin: "Logowanie do panelu administratora",
-    login: "Login",
-    username: "Nazwa użytkownika",
-    password: "Hasło",
-    signIn: "Zaloguj się",
-    signOut: "Wyloguj się",
-    projectId: "ID",
-    title: "Tytuł",
-    content: "Zawartość",
-    projectContent: "Zawartość projektu",
-    image: "Obraz",
-    author: "Autor",
-    actions: "Akcje",
-    addProject: "Dodaj projekt",
-    deleteProject: "Usuń projekt",
-    cancel: "Anuluj",
-    save: "Zapisz",
-    add: "Dodaj",
-    delete: "Usuń",
-    editProject: "Edytuj projekt",
-    createProject: "Utwórz projekt",
-    projectTitle: "Tytuł projektu",
-    projectSlug: "Slug projektu",
-    projectCategory: "Kategoria",
-    projectDate: "Data",
-    projectBrief: "Opis",
-    projectClient: "Klient",
-    projectWebsite: "URL strony",
-    mediaType: "Typ mediów",
-    photo: "Zdjęcie",
-    video: "Wideo",
-    adminDashboard: "Panel administratora",
-    adminPanel: "Panel administratora",
-    projects: "Projekty",
-    manageProjects: "Zarządzaj projektami",
-    invalidCredentials: "Nieprawidłowe dane logowania. Spróbuj ponownie.",
-    // Ключи для навыков
-    journalism: "Dziennikarstwo",
-    newsWriting: "Pisanie wiadomości",
-    interviewing: "Przeprowadzanie wywiadów",
-    research: "Badania",
-    storytelling: "Opowiadanie historii",
-    videoEditing: "Montaż wideo",
-    adobePremiere: "Adobe Premiere Pro",
-    cinematography: "Kinematografia",
-    marketing: "Marketing",
-    contentStrategy: "Strategia treści",
-    socialMedia: "Media społecznościowe",
-    seo: "SEO",
-    analytics: "Analityka",
-    mySkills: "Moje umiejętności",
-    skillsDescription: "Oto niektóre z umiejętności, które rozwinęłam w trakcie mojej kariery",
-    // Ключи для видео
-    addPhoto: "Dodaj zdjęcie",
-    addVideo: "Dodaj wideo",
-    thumbnailUrl: "URL miniatury",
-    videoTitle: "Tytuł wideo",
-    duration: "Czas trwania",
-    // Ключи для футера
-    footerTagline: "Dziennikarstwo | Treść | Wideo",
-    allRightsReserved: "Wszelkie prawa zastrzeżone",
-    // Новые переводы для сертификатов
-    manageCertificates: "Zarządzaj certyfikatami",
-    addCertificate: "Dodaj certyfikat",
-    editCertificate: "Edytuj certyfikat",
-    certificateTitle: "Nazwa certyfikatu",
-    institution: "Instytucja",
-    year: "Rok",
-    description: "Opis",
-    noCertificatesFound: "Nie znaleziono certyfikatów. Dodaj nowy certyfikat, aby rozpocząć.",
-    areYouSure: "Czy jesteś pewien?",
-    deleteConfirmation: "Tej akcji nie można cofnąć. Element zostanie trwale usunięty.",
-    certificateFormDescription: "Wprowadź szczegóły certyfikatu.",
-    // Переводы для информации об авторе
-    manageAuthorInfo: "Zarządzaj informacjami o autorze",
-    authorInformation: "Informacje o autorze",
-    authorInfoDescription: "Zaktualizuj swoje dane osobowe wyświetlane w sekcji O mnie.",
-    authorTitle: "Tytuł / Nagłówek",
-    authorTitleDescription: "Krótki nagłówek zawodowy, który pojawia się na górze sekcji O mnie.",
-    firstParagraph: "Pierwszy akapit",
-    secondParagraph: "Drugi akapit",
-    // Переводы для контактной информации
-    manageContactInfo: "Zarządzaj informacjami kontaktowymi",
-    contactInfoDescription: "Zaktualizuj swoje dane kontaktowe i linki do mediów społecznościowych.",
-    basicContactInfo: "Podstawowe informacje kontaktowe",
-    socialMedia: "Linki do mediów społecznościowych",
-    phoneOptional: "Opcjonalnie. Pozostaw puste, aby ukryć w sekcji kontaktowej.",
-    locationOptional: "Opcjonalnie. Pozostaw puste, aby ukryć w sekcji kontaktowej.",
-    // Переводы для карточек на панели администратора
-    certificatesManageDescription: "Dodawanie, edytowanie lub usuwanie certyfikatów i kwalifikacji.",
-    aboutManageDescription: "Zaktualizuj swoje dane osobowe w sekcji O mnie.",
-    contactManageDescription: "Zarządzaj danymi kontaktowymi i linkami do mediów społecznościowych.",
-    projectsManageDescription: "Dodawanie, edytowanie lub usuwanie projektów w twoim portfolio."
-  }
 };
+
+// Пользовательский хук для использования переводов в компонентах
+export const useTranslation = () => useContext(TranslationContext);

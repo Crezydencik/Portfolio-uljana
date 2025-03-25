@@ -23,14 +23,14 @@ const AdminDashboard = () => {
                 <Folder className="h-4 w-4" />
                 {t('manageProjects')}
               </CardTitle>
-              <CardDescription>{t('projectsManageDescription') || "Add, edit, or remove projects from your portfolio."}</CardDescription>
+              <CardDescription>{t('projectsManageDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
               {t('manageProjects')} {t('projects')}
             </CardContent>
             <CardFooter>
-              <Link to="/admin/projects">
-                <Button>{t('manageProjects')}</Button>
+              <Link to="/admin/project/new">
+                <Button>{t('addProject')}</Button>
               </Link>
             </CardFooter>
           </Card>

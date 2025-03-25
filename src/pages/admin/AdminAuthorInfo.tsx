@@ -1,10 +1,9 @@
 
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@/hooks/useTranslation';
-import { useAuth } from '@/hooks/useAuth';
 import { useAuthorInfoStore, AuthorInfo } from '@/hooks/useAuthorInfoStore';
-import { LogOut, Home, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -19,10 +18,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { useForm } from "react-hook-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import AdminLayout from '@/components/admin/AdminLayout';
+import RichTextEditor from '@/components/RichTextEditor';
 
 const AdminAuthorInfo = () => {
   const { t } = useTranslation();
-  const { logout } = useAuth();
   const navigate = useNavigate();
   const { getAuthorInfo, updateAuthorInfo } = useAuthorInfoStore();
   
@@ -32,37 +32,17 @@ const AdminAuthorInfo = () => {
     defaultValues: currentInfo,
   });
   
-  const handleLogout = () => {
-    logout();
-    navigate('/admin');
-  };
-
   const onSubmit = (data: AuthorInfo) => {
     updateAuthorInfo(data);
     toast({
-      title: 'Success',
-      description: 'Author information has been updated',
+      title: t('success') || 'Success',
+      description: t('authorInfoUpdated') || 'Author information has been updated',
     });
   };
   
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm p-4 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          <Link to="/" className="text-gray-600 hover:text-purple-600 flex items-center">
-            <Home size={20} className="mr-2" /> {t('home')}
-          </Link>
-          <Link to="/admin/dashboard" className="text-gray-600 hover:text-purple-600 flex items-center ml-4">
-            {t('adminDashboard')}
-          </Link>
-          <h1 className="text-xl font-semibold ml-4">{t('manageAuthorInfo')}</h1>
-        </div>
-        <Button variant="outline" onClick={handleLogout} className="flex items-center">
-          <LogOut size={16} className="mr-2" /> {t('signOut')}
-        </Button>
-      </header>
-      
-      <main className="container max-w-3xl mx-auto py-8 px-4">
+    <AdminLayout>
+      <div className="container max-w-3xl mx-auto py-8 px-4">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -70,7 +50,7 @@ const AdminAuthorInfo = () => {
               {t('authorInformation')}
             </CardTitle>
             <CardDescription>
-              {t('authorInfoDescription')}
+              {t('aboutManageDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -100,9 +80,10 @@ const AdminAuthorInfo = () => {
                     <FormItem>
                       <FormLabel>{t('firstParagraph')}</FormLabel>
                       <FormControl>
-                        <textarea 
-                          className="flex min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          {...field} 
+                        <RichTextEditor 
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder={t('firstParagraph')}
                         />
                       </FormControl>
                       <FormMessage />
@@ -117,9 +98,10 @@ const AdminAuthorInfo = () => {
                     <FormItem>
                       <FormLabel>{t('secondParagraph')}</FormLabel>
                       <FormControl>
-                        <textarea 
-                          className="flex min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          {...field} 
+                        <RichTextEditor 
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder={t('secondParagraph')}
                         />
                       </FormControl>
                       <FormMessage />
@@ -136,8 +118,8 @@ const AdminAuthorInfo = () => {
             </Form>
           </CardContent>
         </Card>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 };
 

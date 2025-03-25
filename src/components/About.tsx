@@ -29,12 +29,14 @@ const About = () => {
           <h3 className="text-2xl md:text-3xl font-semibold mb-4">
             {authorInfo.title}
           </h3>
-          <p className="text-gray-700 mb-6">
-            {authorInfo.description1}
-          </p>
-          <p className="text-gray-700 mb-8">
-            {authorInfo.description2}
-          </p>
+          <div 
+            className="text-gray-700 mb-6"
+            dangerouslySetInnerHTML={{ __html: authorInfo.description1 }}
+          />
+          <div 
+            className="text-gray-700 mb-8"
+            dangerouslySetInnerHTML={{ __html: authorInfo.description2 }}
+          />
         </div>
       </div>
     </section>
