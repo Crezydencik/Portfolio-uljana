@@ -317,7 +317,6 @@ const AdminProjectEdit = () => {
                   value={project.id}
                   onChange={handleInputChange}
                   placeholder="project-unique-id"
-                  disabled={!isNewProject}
                   required
                 />
                 {isNewProject && (

@@ -12,7 +12,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Mock admin credentials (in a real app, this would be handled by a backend)
 // IMPORTANT: Don't use hardcoded credentials in production!
 const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'adminpassword';
+const ADMIN_PASSWORD = 'Port.ulj25';
 
 // Key for storing auth state in localStorage
 const AUTH_STORAGE_KEY = 'auth_status';

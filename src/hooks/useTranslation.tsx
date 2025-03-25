@@ -500,7 +500,7 @@ const translations: TranslationDict = {
     ru: 'Мои навыки',
     pl: 'Moje umiejętności',
   },
-  skillsDescription: {
+  skilsDescription: {
     en: 'Here are some of the skills I have developed over the years.',
     ru: 'Вот некоторые из навыков, которые я развила за годы работы.',
     pl: 'Oto niektóre z umiejętności, które rozwinęłam przez lata.',
