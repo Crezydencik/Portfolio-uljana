@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Film, Play, X } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -17,11 +16,7 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
   const { t } = useTranslation();
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
   
-  // For simplicity, we'll use YouTube embed URLs
-  // In a real app, you would use your own video links or a video hosting service
   const getYouTubeEmbedUrl = (videoTitle: string) => {
-    // This is a demo function - in a real app, you would use actual video URLs
-    // Here we just create a YouTube search URL based on the title
     const searchQuery = encodeURIComponent(videoTitle);
     return `https://www.youtube.com/embed?search=${searchQuery}&autoplay=1`;
   };
@@ -33,6 +28,16 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
   const handleCloseVideo = () => {
     setActiveVideo(null);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleCloseVideo();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
@@ -73,11 +78,17 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
       
       {/* Video Player Modal */}
       {activeVideo && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-4xl aspect-video bg-black">
+        <div 
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          onClick={handleCloseVideo}
+        >
+          <div 
+            className="relative w-full max-w-4xl aspect-video bg-black"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button 
               onClick={handleCloseVideo}
-              className="absolute -top-10 right-0 text-white hover:text-red-500 transition-colors"
+              className="absolute top-2 right-2 text-white bg-black/50 rounded-full p-2 hover:bg-red-500 transition-colors"
               aria-label="Close"
             >
               <X size={24} />

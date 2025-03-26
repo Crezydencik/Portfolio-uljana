@@ -17,10 +17,6 @@ const AdminDashboard = () => {
         <h1 className="text-3xl font-bold mb-8">{t('adminDashboard')}</h1>
         
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-          {/* MongoDB Configuration */}
-          <div className="col-span-1 md:col-span-2">
-            <MongoDBConfig />
-          </div>
           
           {/* Projects */}
           <Card>
@@ -40,8 +36,8 @@ const AdminDashboard = () => {
             </CardContent>
             <CardFooter>
               <Button asChild className="w-full">
-                <Link to="/admin/project/new">
-                  {t('addProject')}
+              <Link to="/admin/projectinfo">
+                  Manage project
                 </Link>
               </Button>
             </CardFooter>

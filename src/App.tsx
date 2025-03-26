@@ -17,10 +17,12 @@ import AdminCertificates from "./pages/admin/AdminCertificates";
 import AdminAuthorInfo from "./pages/admin/AdminAuthorInfo";
 import AdminContact from "./pages/admin/AdminContact";
 import AdminSkills from "./pages/admin/AdminSkills";
+import AdminProjectinfo from "./pages/admin/AdminProjectinfo";
 
 const queryClient = new QueryClient();
 
 const App = () => (
+  
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
@@ -37,6 +39,11 @@ const App = () => (
               <Route path="/admin/dashboard" element={
                 <ProtectedRoute>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/projectinfo" element={
+                <ProtectedRoute>
+                  <AdminProjectinfo />
                 </ProtectedRoute>
               } />
               <Route path="/admin/project/:id" element={
@@ -69,6 +76,7 @@ const App = () => (
                   <AdminSkills />
                 </ProtectedRoute>
               } />
+              
               
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />

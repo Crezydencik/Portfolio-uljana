@@ -56,3 +56,30 @@ export interface MongoDBProject extends Project {
   createdAt?: string;
   updatedAt?: string;
 }
+
+// server/src/models/Project.ts
+import { Schema, model } from 'mongoose';
+
+const videoItemSchema = new Schema({
+  thumbnail: String,
+  title: String,
+  duration: String,
+}, { _id: false });
+
+const projectSchema = new Schema({
+  id: { type: String, required: true, unique: true },
+  title: String,
+  category: String,
+  author: String,
+  date: String,
+  image: String,
+  mediaType: [String],
+  photos: [String],
+  videos: [videoItemSchema],
+  content: String,
+  relatedProjects: [String],
+}, {
+  timestamps: true
+});
+
+export default model('Project', projectSchema);
