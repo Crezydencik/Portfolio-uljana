@@ -13,7 +13,7 @@ import {
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { language, setLanguage } = useTranslation();
+  const { t, language, setLanguage } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,11 +25,11 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '/#home' },
-    { name: 'About', href: '/#about' },
-    { name: 'Portfolio', href: '/#portfolio' },
-    { name: 'Certificates', href: '/#certificates' },
-    { name: 'Contact', href: '/#contact' },
+    { name: t('home'), href: '/#home' },
+    { name: t('aboutMe'), href: '/#about' },
+    { name: t('portfolio'), href: '/#portfolio' },
+    { name: t('certificates'), href: '/#certificates' },
+    { name: t('contact'), href: '/#contact' },
   ];
 
   return (

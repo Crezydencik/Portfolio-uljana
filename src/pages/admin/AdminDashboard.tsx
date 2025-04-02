@@ -41,12 +41,12 @@ const AdminDashboard = () => {
             <CardFooter className="flex gap-2">
               <Button asChild className="w-full">
                 <Link to="/admin/projectinfo">
-                  Manage Projects
+                  {t('manageProjects')}
                 </Link>
               </Button>
               <Button asChild variant="outline" className="w-full">
                 <Link to="/admin/project/new">
-                  Add New Project
+                  {t('addProject')}
                 </Link>
               </Button>
             </CardFooter>
