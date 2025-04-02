@@ -13,6 +13,7 @@ import {
   Image,
   Home,
   Eye,
+  Plus,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
@@ -56,6 +57,10 @@ const AdminProjectinfo = () => {
       description: 'Project has been deleted',
     });
   };
+  
+  const handleAddProject = () => {
+    navigate('/admin/project/new');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,11 +80,9 @@ const AdminProjectinfo = () => {
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold">{t('manageProjects')}</h2>
-            <Link to="/admin/project/new">
-              <Button className="bg-purple-600 hover:bg-purple-700">
-                <PlusCircle size={18} className="mr-2" /> {t('addProject')}
-              </Button>
-            </Link>
+            <Button onClick={handleAddProject} className="bg-purple-600 hover:bg-purple-700">
+              <Plus size={18} className="mr-2" /> {t('addProject')}
+            </Button>
           </div>
 
           <div className="overflow-x-auto">
@@ -170,6 +173,18 @@ const AdminProjectinfo = () => {
               </TableBody>
             </Table>
           </div>
+          
+          {projects.length === 0 && (
+            <div className="flex justify-center mt-8">
+              <Button 
+                onClick={handleAddProject} 
+                className="bg-purple-600 hover:bg-purple-700"
+                size="lg"
+              >
+                <PlusCircle size={20} className="mr-2" /> Create Your First Project
+              </Button>
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -16,6 +16,10 @@ const AdminDashboard = () => {
       <div className="container mx-auto py-8">
         <h1 className="text-3xl font-bold mb-8">{t('adminDashboard')}</h1>
         
+        <div className="mb-10">
+          <MongoDBConfig />
+        </div>
+        
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
           
           {/* Projects */}
@@ -34,10 +38,15 @@ const AdminDashboard = () => {
                 {t('projects')}
               </p>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex gap-2">
               <Button asChild className="w-full">
-              <Link to="/admin/projectinfo">
-                  Manage project
+                <Link to="/admin/projectinfo">
+                  Manage Projects
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full">
+                <Link to="/admin/project/new">
+                  Add New Project
                 </Link>
               </Button>
             </CardFooter>
