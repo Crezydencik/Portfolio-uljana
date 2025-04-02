@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -15,7 +14,8 @@ import {
   FilePlus,
   Film,
   Image as ImageIcon,
-  Upload
+  Upload,
+  Youtube
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -62,7 +62,8 @@ const AdminProjectEdit = () => {
   const [newVideo, setNewVideo] = useState<VideoItem>({
     thumbnail: '',
     title: '',
-    duration: ''
+    duration: '',
+    videoUrl: ''
   });
 
   // Get all projects for selection
@@ -203,7 +204,8 @@ const AdminProjectEdit = () => {
       setNewVideo({
         thumbnail: '',
         title: '',
-        duration: ''
+        duration: '',
+        videoUrl: ''
       });
       
       // Ensure 'video' is in mediaType
@@ -587,6 +589,21 @@ const AdminProjectEdit = () => {
                       placeholder="Duration (e.g. 3:42)"
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="videoUrl" className="flex items-center">
+                      <Youtube size={16} className="mr-2 text-red-600" /> {t('videoUrl')}
+                    </Label>
+                    <Input
+                      id="videoUrl"
+                      name="videoUrl"
+                      value={newVideo.videoUrl || ''}
+                      onChange={handleVideoInputChange}
+                      placeholder="YouTube or other video URL"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      For YouTube, use the standard watch URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)
+                    </p>
+                  </div>
                 </CardContent>
                 <CardFooter>
                   <Button 
@@ -618,6 +635,11 @@ const AdminProjectEdit = () => {
                     </div>
                     <CardContent className="p-4">
                       <h3 className="font-medium">{video.title}</h3>
+                      {video.videoUrl && (
+                        <p className="text-sm text-gray-500 truncate mt-1">
+                          URL: {video.videoUrl}
+                        </p>
+                      )}
                     </CardContent>
                     <CardFooter className="p-4 pt-0 flex justify-end">
                       <Button 

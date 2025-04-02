@@ -3,6 +3,7 @@ export interface VideoItem {
   thumbnail: string;
   title: string;
   duration: string;
+  videoUrl?: string; // Adding videoUrl field
 }
 
 export interface Project {
@@ -65,6 +66,7 @@ const videoItemSchema = new Schema({
   thumbnail: String,
   title: String,
   duration: String,
+  videoUrl: String, // Adding videoUrl field
 }, { _id: false });
 
 const projectSchema = new Schema({

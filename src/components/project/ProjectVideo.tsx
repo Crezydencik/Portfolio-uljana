@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Film, Play, X } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -6,6 +7,7 @@ interface VideoItem {
   thumbnail: string;
   title: string;
   duration: string;
+  videoUrl?: string;
 }
 
 interface ProjectVideoProps {
@@ -16,13 +18,29 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
   const { t } = useTranslation();
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
   
-  const getYouTubeEmbedUrl = (videoTitle: string) => {
-    const searchQuery = encodeURIComponent(videoTitle);
+  const getVideoEmbedUrl = (videoItem: VideoItem) => {
+    // If videoUrl is provided, use it directly
+    if (videoItem.videoUrl) {
+      // Check if it's a YouTube URL that needs to be converted to embed format
+      if (videoItem.videoUrl.includes('youtube.com/watch')) {
+        const videoId = new URL(videoItem.videoUrl).searchParams.get('v');
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      }
+      // Check if it's already a YouTube embed URL
+      if (videoItem.videoUrl.includes('youtube.com/embed')) {
+        return videoItem.videoUrl + (videoItem.videoUrl.includes('?') ? '&autoplay=1' : '?autoplay=1');
+      }
+      // Return the video URL as is if it's not a YouTube URL
+      return videoItem.videoUrl;
+    }
+    
+    // Fallback to search by title if no videoUrl is provided
+    const searchQuery = encodeURIComponent(videoItem.title);
     return `https://www.youtube.com/embed?search=${searchQuery}&autoplay=1`;
   };
   
-  const handlePlayVideo = (videoTitle: string) => {
-    setActiveVideo(videoTitle);
+  const handlePlayVideo = (index: number) => {
+    setActiveVideo(videos[index].title);
   };
   
   const handleCloseVideo = () => {
@@ -38,6 +56,9 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  // Find the active video object
+  const activeVideoObject = activeVideo ? videos.find(video => video.title === activeVideo) : null;
 
   return (
     <div className="mb-10 p-6 bg-slate-50 rounded-lg animate-on-scroll">
@@ -61,7 +82,7 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
               <div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <button 
-                    onClick={() => handlePlayVideo(video.title)}
+                    onClick={() => handlePlayVideo(index)}
                     className="rounded-full bg-red-600/90 p-4 flex items-center justify-center group-hover:bg-red-700 transition-colors"
                   >
                     <Play fill="white" className="text-white" size={24} />
@@ -77,7 +98,7 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
       </div>
       
       {/* Video Player Modal */}
-      {activeVideo && (
+      {activeVideo && activeVideoObject && (
         <div 
           className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
           onClick={handleCloseVideo}
@@ -94,7 +115,7 @@ const ProjectVideo = ({ videos }: ProjectVideoProps) => {
               <X size={24} />
             </button>
             <iframe
-              src={getYouTubeEmbedUrl(activeVideo)}
+              src={getVideoEmbedUrl(activeVideoObject)}
               title={activeVideo}
               className="w-full h-full"
               allowFullScreen
