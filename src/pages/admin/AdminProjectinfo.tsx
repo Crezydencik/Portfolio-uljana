@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -11,6 +12,7 @@ import {
   Film,
   Image,
   Home,
+  Eye,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
@@ -120,6 +122,12 @@ const AdminProjectinfo = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
+                          <Link to={`/project/${project.id}`} target="_blank">
+                            <Button variant="outline" size="sm" className="h-8 w-8 p-0 text-blue-600">
+                              <Eye size={16} />
+                            </Button>
+                          </Link>
+
                           <Link to={`/admin/project/${project.id}`}>
                             <Button variant="outline" size="sm" className="h-8 w-8 p-0">
                               <Edit size={16} />

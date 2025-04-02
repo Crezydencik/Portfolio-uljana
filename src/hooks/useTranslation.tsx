@@ -215,6 +215,21 @@ const translations: TranslationDict = {
     ru: 'Вернуться на главную',
     pl: 'Wróć na stronę główną',
   },
+  notFound: {
+    en: 'Page not found',
+    ru: 'Страница не найдена',
+    pl: 'Strona nie znaleziona',
+  },
+  projectNotFoundMessage: {
+    en: 'The project you are looking for does not exist.',
+    ru: 'Проект, который вы ищете, не существует.',
+    pl: 'Projekt, którego szukasz, nie istnieje.',
+  },
+  backHome: {
+    en: 'Back to home',
+    ru: 'Вернуться на главную',
+    pl: 'Wróć na stronę główną',
+  },
   
   // Admin
   signIn: {
@@ -363,6 +378,46 @@ const translations: TranslationDict = {
     ru: 'GitHub проекта',
     pl: 'GitHub projektu',
   },
+  projectId: {
+    en: 'Project ID',
+    ru: 'ID проекта',
+    pl: 'ID projektu',
+  },
+  title: {
+    en: 'Title',
+    ru: 'Название',
+    pl: 'Tytuł',
+  },
+  category: {
+    en: 'Category',
+    ru: 'Категория',
+    pl: 'Kategoria',
+  },
+  date: {
+    en: 'Date',
+    ru: 'Дата',
+    pl: 'Data',
+  },
+  content: {
+    en: 'Content',
+    ru: 'Контент',
+    pl: 'Treść',
+  },
+  actions: {
+    en: 'Actions',
+    ru: 'Действия',
+    pl: 'Akcje',
+  },
+  backToProjects: {
+    en: 'Back to projects',
+    ru: 'Назад к проектам',
+    pl: 'Wróć do projektów',
+  },
+  viewDetails: {
+    en: 'View details',
+    ru: 'Посмотреть детали',
+    pl: 'Zobacz szczegóły',
+  },
   
   addCertificate: {
     en: 'Add certificate',
@@ -482,7 +537,7 @@ const translations: TranslationDict = {
     pl: 'Strona internetowa',
   },
   
-  // Edit and Delete (moved from being duplicated)
+  // Edit and Delete
   editItem: {
     en: 'Edit',
     ru: 'Редактировать',
@@ -654,6 +709,11 @@ const translations: TranslationDict = {
     en: 'Database Name',
     ru: 'Имя базы данных',
     pl: 'Nazwa bazy danych',
+  },
+  collectionName: {
+    en: 'Collection Name',
+    ru: 'Имя коллекции',
+    pl: 'Nazwa kolekcji',
   },
   connect: {
     en: 'Connect',

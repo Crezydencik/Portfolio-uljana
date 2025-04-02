@@ -16,6 +16,7 @@ export interface Project {
   photos?: string[];
   videos?: VideoItem[];
   content: string;
+  description?: string; // Adding optional description field
   relatedProjects?: string[];
   // Fields for file storage
   imageFile?: File | null;
@@ -77,6 +78,7 @@ const projectSchema = new Schema({
   photos: [String],
   videos: [videoItemSchema],
   content: String,
+  description: String, // Adding description field
   relatedProjects: [String],
 }, {
   timestamps: true

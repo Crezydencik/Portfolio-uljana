@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
@@ -8,13 +9,14 @@ import ProjectHero from '@/components/project/ProjectHero';
 import ProjectPhoto from '@/components/project/ProjectPhoto';
 import ProjectVideo from '@/components/project/ProjectVideo';
 import RelatedProjects from '@/components/project/RelatedProjects';
-import projectsData from '@/data/projectsData';
-import { Project } from '@/types/project';
+import { useProjectStore } from '@/hooks/useProjectStore';
 
 const ProjectDetail = () => {
   const { id } = useParams<{id: string}>();
   const { t } = useTranslation();
-  const project = id ? projectsData[id as keyof typeof projectsData] : undefined;
+  const { getProject, getAllProjects } = useProjectStore();
+  const project = id ? getProject(id) : undefined;
+  const allProjects = getAllProjects();
 
   useEffect(() => {
     // Scroll to top when the component mounts
@@ -64,18 +66,20 @@ const ProjectDetail = () => {
     );
   }
 
-  // Get related projects data with proper type safety
-  const relatedProjectsData: Project[] = project.relatedProjects 
+  // Get related projects data
+  const relatedProjectsData = project.relatedProjects 
     ? project.relatedProjects
         .map(relatedId => {
-          // Ensure the related project ID exists in the projects data
-          if (relatedId in projectsData) {
-            return projectsData[relatedId];
-          }
-          return null;
+          return allProjects.find(p => p.id === relatedId);
         })
-        .filter((project): project is Project => project !== null) 
+        .filter(project => project !== undefined)
     : [];
+
+  // Extract a short description from content if no description is provided
+  const projectDescription = project.description || 
+    (project.content ? 
+      project.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...' 
+      : '');
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -88,15 +92,16 @@ const ProjectDetail = () => {
           author={project.author}
           date={project.date}
           image={project.image}
-
+          mediaType={project.mediaType}
+          description={projectDescription}
         />
         
         {/* Content section */}
         <div className="container max-w-4xl mx-auto px-4 py-12">
+          {/* Project content */}
+          <div className="prose max-w-none mb-8" dangerouslySetInnerHTML={{ __html: project.content }}></div>
+          
           {/* If there's video content, display a video section */}
-          
-          <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: project.content }}></div>
-          
           {project.mediaType && project.mediaType.includes('video') && project.videos && (
             <ProjectVideo videos={project.videos} />
           )}
@@ -105,6 +110,7 @@ const ProjectDetail = () => {
           {project.mediaType && project.mediaType.includes('photo') && project.photos && (
             <ProjectPhoto photos={project.photos} title={project.title} />
           )}
+          
           {/* Related projects */}
           {relatedProjectsData.length > 0 && (
             <RelatedProjects relatedProjects={relatedProjectsData} />
@@ -114,7 +120,7 @@ const ProjectDetail = () => {
             <Link 
               to="/#portfolio" 
               className="portfolio-button inline-flex items-center"
-              >
+            >
               {t('viewAll')} <ExternalLink size={16} className="ml-2" />
             </Link>
           </div>

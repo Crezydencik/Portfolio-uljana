@@ -11,9 +11,18 @@ interface ProjectHeroProps {
   date: string;
   image: string;
   mediaType?: string[];
+  description?: string;
 }
 
-const ProjectHero = ({ title, category, author, date, image, mediaType }: ProjectHeroProps) => {
+const ProjectHero = ({ 
+  title, 
+  category, 
+  author, 
+  date, 
+  image, 
+  mediaType,
+  description 
+}: ProjectHeroProps) => {
   const { t } = useTranslation();
 
   return (
@@ -29,6 +38,11 @@ const ProjectHero = ({ title, category, author, date, image, mediaType }: Projec
             <ArrowLeft size={16} className="mr-2" /> {t('backToProjects')}
           </Link>
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{title}</h1>
+          
+          {description && (
+            <p className="text-white/90 mb-4 max-w-2xl">{description}</p>
+          )}
+          
           <div className="flex flex-wrap gap-4 text-sm text-white/80">
             <div className="flex items-center">
               <Tag size={14} className="mr-1" /> {category}
