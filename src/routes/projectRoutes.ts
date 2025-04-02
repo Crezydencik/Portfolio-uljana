@@ -1,11 +1,11 @@
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import Project from '../models/Project';
 
 const router = express.Router();
 
 // Get all projects
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const projects = await Project.find();
     res.json(projects);
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get a single project
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const project = await Project.findOne({ id: req.params.id });
     if (!project) {
@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a new project
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     const project = new Project(req.body);
     await project.save();
@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update a project
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req: Request, res: Response) => {
   try {
     const project = await Project.findOneAndUpdate(
       { id: req.params.id },
@@ -56,7 +56,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a project
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const project = await Project.findOneAndDelete({ id: req.params.id });
     if (!project) {
