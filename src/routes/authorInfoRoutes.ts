@@ -12,9 +12,9 @@ router.get('/', async (req: Request, res: Response) => {
     // If no author info exists, create default one
     if (!authorInfo) {
       authorInfo = new AuthorInfo({
-        title: 'Passionate communicator with a deep interest in marketing and journalism',
-        description1: 'From an early age, I had an irresistible desire to communicate with people and create valuable content for society.',
-        description2: 'Creativity and constant movement are key to a happy life for me!',
+        title: "I'm a Web Developer",
+        description1: "I design and code beautifully simple things, and I love what I do.",
+        description2: "I'm passionate about cutting-edge, pixel-perfect, beautiful interfaces and intuitively implemented UX."
       });
       await authorInfo.save();
     }
