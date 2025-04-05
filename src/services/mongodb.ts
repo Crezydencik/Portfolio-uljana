@@ -99,10 +99,10 @@ class MongoDBService {
   }
 
   // Project methods
-  async getAllProjects(): Promise<Project[] | null> {
+  async getAllProjects(): Promise<Project[]> {
     // Get from localStorage as fallback
     const localData = localStorage.getItem('projects');
-    const localProjects = localData ? Object.values(JSON.parse(localData)) : [];
+    const localProjects: Project[] = localData ? Object.values(JSON.parse(localData)) : [];
     
     return this.fetchWithFallback<Project[]>(`${this.apiBasePath}/projects`, localProjects);
   }
