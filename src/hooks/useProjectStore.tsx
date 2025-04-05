@@ -6,6 +6,7 @@ import MongoDBService from '@/services/mongodb';
 
 interface ProjectState {
   projects: ProjectsData;
+  loading: boolean;
   useMongoDBBackend: boolean;
   setUseMongoDBBackend: (useMongoDBBackend: boolean) => void;
   loadProjectsFromMongoDB: () => Promise<void>;
@@ -18,6 +19,7 @@ interface ProjectState {
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
   projects: {},
+  loading: false,
   useMongoDBBackend: false,
   
   setUseMongoDBBackend: (useMongoDBBackend: boolean) => {
@@ -25,6 +27,11 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     
     // Save preference to localStorage
     localStorage.setItem('useMongoDBBackend', JSON.stringify(useMongoDBBackend));
+    
+    // Load projects from MongoDB if enabled
+    if (useMongoDBBackend) {
+      get().loadProjectsFromMongoDB();
+    }
     
     toast({
       title: useMongoDBBackend ? 'MongoDB Enabled' : 'Local Storage Enabled',
@@ -35,6 +42,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   },
 
   loadProjectsFromMongoDB: async () => {
+    set({ loading: true });
+    
     const mongoService = MongoDBService.getInstance();
     const data = await mongoService.getAllProjects();
 
@@ -44,6 +53,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         description: 'Failed to load projects from MongoDB',
         variant: 'destructive',
       });
+      set({ loading: false });
       return;
     }
 
@@ -52,7 +62,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       projectsObject[project.id] = project;
     });
 
-    set({ projects: projectsObject });
+    set({ 
+      projects: projectsObject,
+      loading: false 
+    });
 
     toast({
       title: 'Loaded',

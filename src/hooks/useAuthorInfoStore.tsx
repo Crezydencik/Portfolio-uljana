@@ -1,6 +1,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import MongoDBService from '@/services/mongodb';
 
 export interface AuthorInfo {
   title: string;
@@ -10,8 +11,12 @@ export interface AuthorInfo {
 
 interface AuthorInfoState {
   authorInfo: AuthorInfo;
+  loading: boolean;
+  useMongoDBBackend: boolean;
+  setUseMongoDBBackend: (useMongoDBBackend: boolean) => void;
   updateAuthorInfo: (info: AuthorInfo) => void;
   getAuthorInfo: () => AuthorInfo;
+  loadFromMongoDB: () => Promise<void>;
 }
 
 // Начальные данные
@@ -25,9 +30,36 @@ export const useAuthorInfoStore = create<AuthorInfoState>()(
   persist(
     (set, get) => ({
       authorInfo: initialAuthorInfo,
+      loading: false,
+      useMongoDBBackend: false,
+      
+      setUseMongoDBBackend: (useMongoDBBackend: boolean) => {
+        set({ useMongoDBBackend });
+        if (useMongoDBBackend) {
+          get().loadFromMongoDB();
+        }
+      },
+      
+      loadFromMongoDB: async () => {
+        if (!get().useMongoDBBackend) return;
+        
+        set({ loading: true });
+        const mongoService = MongoDBService.getInstance();
+        const info = await mongoService.getAuthorInfo();
+        
+        if (info) {
+          set({ authorInfo: info });
+        }
+        set({ loading: false });
+      },
       
       updateAuthorInfo: (info: AuthorInfo) => {
         set({ authorInfo: info });
+        
+        if (get().useMongoDBBackend) {
+          const mongoService = MongoDBService.getInstance();
+          mongoService.updateAuthorInfo(info);
+        }
       },
       
       getAuthorInfo: () => {
@@ -39,5 +71,14 @@ export const useAuthorInfoStore = create<AuthorInfoState>()(
     }
   )
 );
+
+// Load MongoDB preference from ProjectStore and initialize
+if (typeof window !== 'undefined') {
+  const storedPreference = localStorage.getItem('useMongoDBBackend');
+  if (storedPreference) {
+    const useMongoDBBackend = JSON.parse(storedPreference);
+    useAuthorInfoStore.getState().setUseMongoDBBackend(useMongoDBBackend);
+  }
+}
 
 export default useAuthorInfoStore;

@@ -1,5 +1,8 @@
 
 import { Project, MongoDBCredentials, MongoDBStatus } from '@/types/project';
+import { AuthorInfo } from '@/hooks/useAuthorInfoStore';
+import { Certificate } from '@/hooks/useCertificatesStore';
+import { ContactInfo } from '@/hooks/useContactStore';
 
 class MongoDBService {
   private static instance: MongoDBService;
@@ -7,6 +10,7 @@ class MongoDBService {
   public database: string = '';
   public collection: string = '';
   private status: MongoDBStatus = { connected: false };
+  private apiBasePath: string = '';
 
   private constructor() {
     // Load credentials from localStorage if available
@@ -17,6 +21,17 @@ class MongoDBService {
         this.connectionString = credentials.connectionString;
         this.database = credentials.database;
         this.collection = credentials.collection;
+        
+        // Extract host from connection string for API path
+        try {
+          const url = new URL(this.connectionString);
+          this.apiBasePath = `${url.protocol}//${url.host}/api`;
+        } catch (error) {
+          console.error('Invalid connection string format:', error);
+          this.apiBasePath = 'http://localhost:3000/api'; // Fallback
+        }
+      } else {
+        this.apiBasePath = 'http://localhost:3000/api'; // Default
       }
     }
   }
@@ -38,10 +53,18 @@ class MongoDBService {
     const credentials: MongoDBCredentials = { connectionString, database, collection };
     localStorage.setItem('mongodbCredentials', JSON.stringify(credentials));
     
+    // Extract host from connection string for API path
+    try {
+      const url = new URL(connectionString);
+      this.apiBasePath = `${url.protocol}//${url.host}/api`;
+    } catch (error) {
+      console.error('Invalid connection string format:', error);
+      this.apiBasePath = 'http://localhost:3000/api'; // Fallback
+    }
+    
     // Simulate API call to check connection
     try {
       // In a real app, we'd make an API call to verify the connection
-      // For now, we'll simulate a successful connection
       this.status = { 
         connected: true, 
         database, 
@@ -57,34 +80,31 @@ class MongoDBService {
     }
   }
 
-  async getAllProjects(): Promise<Project[] | null> {
+  private async fetchWithFallback<T>(url: string, fallbackData: T): Promise<T> {
     if (!this.status.connected) {
       console.warn('MongoDB not connected. Using local data instead.');
-      // Return an empty array to indicate no projects from MongoDB
-      return [];
+      return fallbackData;
     }
     
     try {
-      // In a real application, you would make an actual API call to your backend
-      // For now, we're simulating that API call
-      
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // In a real app, we would get this data from the server
-      // For now, we'll use local storage as a fallback
-      const localData = localStorage.getItem('projects');
-      if (localData) {
-        // Parse the local data and convert it to an array of projects
-        const projectsObject = JSON.parse(localData);
-        return Object.values(projectsObject);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
       }
-      
-      return [];
+      return await response.json();
     } catch (error) {
-      console.error('Error fetching projects from MongoDB:', error);
-      return null;
+      console.error(`Error fetching from ${url}:`, error);
+      return fallbackData;
     }
+  }
+
+  // Project methods
+  async getAllProjects(): Promise<Project[] | null> {
+    // Get from localStorage as fallback
+    const localData = localStorage.getItem('projects');
+    const localProjects = localData ? Object.values(JSON.parse(localData)) : [];
+    
+    return this.fetchWithFallback<Project[]>(`${this.apiBasePath}/projects`, localProjects);
   }
 
   async saveProject(project: Project): Promise<boolean> {
@@ -94,13 +114,13 @@ class MongoDBService {
     }
     
     try {
-      // In a real app, we would make an API call to save the project
-      // For now, we'll simulate a successful save
+      const response = await fetch(`${this.apiBasePath}/projects`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(project)
+      });
       
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      return true;
+      return response.ok;
     } catch (error) {
       console.error('Error saving project to MongoDB:', error);
       return false;
@@ -114,13 +134,13 @@ class MongoDBService {
     }
     
     try {
-      // In a real app, we would make an API call to update the project
-      // For now, we'll simulate a successful update
+      const response = await fetch(`${this.apiBasePath}/projects/${project.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(project)
+      });
       
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      return true;
+      return response.ok;
     } catch (error) {
       console.error('Error updating project in MongoDB:', error);
       return false;
@@ -134,15 +154,162 @@ class MongoDBService {
     }
     
     try {
-      // In a real app, we would make an API call to delete the project
-      // For now, we'll simulate a successful delete
+      const response = await fetch(`${this.apiBasePath}/projects/${projectId}`, {
+        method: 'DELETE'
+      });
       
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      return true;
+      return response.ok;
     } catch (error) {
       console.error('Error deleting project from MongoDB:', error);
+      return false;
+    }
+  }
+
+  // Author Info methods
+  async getAuthorInfo(): Promise<AuthorInfo | null> {
+    // Get from localStorage as fallback
+    const localData = localStorage.getItem('author-info-storage');
+    let fallbackData = null;
+    if (localData) {
+      try {
+        const parsed = JSON.parse(localData);
+        fallbackData = parsed.state?.authorInfo || null;
+      } catch (error) {
+        console.error('Error parsing local author info:', error);
+      }
+    }
+    
+    return this.fetchWithFallback<AuthorInfo | null>(`${this.apiBasePath}/author-info`, fallbackData);
+  }
+
+  async updateAuthorInfo(authorInfo: AuthorInfo): Promise<boolean> {
+    if (!this.status.connected) {
+      console.warn('MongoDB not connected. Author info will be updated locally instead.');
+      return false;
+    }
+    
+    try {
+      const response = await fetch(`${this.apiBasePath}/author-info`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(authorInfo)
+      });
+      
+      return response.ok;
+    } catch (error) {
+      console.error('Error updating author info in MongoDB:', error);
+      return false;
+    }
+  }
+
+  // Certificate methods
+  async getAllCertificates(): Promise<Certificate[] | null> {
+    // Get from localStorage as fallback
+    const localData = localStorage.getItem('certificates-storage');
+    let fallbackData: Certificate[] = [];
+    if (localData) {
+      try {
+        const parsed = JSON.parse(localData);
+        fallbackData = parsed.state?.certificates || [];
+      } catch (error) {
+        console.error('Error parsing local certificates:', error);
+      }
+    }
+    
+    return this.fetchWithFallback<Certificate[]>(`${this.apiBasePath}/certificates`, fallbackData);
+  }
+
+  async addCertificate(certificate: Certificate): Promise<boolean> {
+    if (!this.status.connected) {
+      console.warn('MongoDB not connected. Certificate will be saved locally instead.');
+      return false;
+    }
+    
+    try {
+      const response = await fetch(`${this.apiBasePath}/certificates`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(certificate)
+      });
+      
+      return response.ok;
+    } catch (error) {
+      console.error('Error saving certificate to MongoDB:', error);
+      return false;
+    }
+  }
+
+  async updateCertificate(certificate: Certificate): Promise<boolean> {
+    if (!this.status.connected) {
+      console.warn('MongoDB not connected. Certificate will be updated locally instead.');
+      return false;
+    }
+    
+    try {
+      const response = await fetch(`${this.apiBasePath}/certificates/${certificate.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(certificate)
+      });
+      
+      return response.ok;
+    } catch (error) {
+      console.error('Error updating certificate in MongoDB:', error);
+      return false;
+    }
+  }
+
+  async deleteCertificate(certificateId: string): Promise<boolean> {
+    if (!this.status.connected) {
+      console.warn('MongoDB not connected. Certificate will be deleted locally instead.');
+      return false;
+    }
+    
+    try {
+      const response = await fetch(`${this.apiBasePath}/certificates/${certificateId}`, {
+        method: 'DELETE'
+      });
+      
+      return response.ok;
+    } catch (error) {
+      console.error('Error deleting certificate from MongoDB:', error);
+      return false;
+    }
+  }
+
+  // Contact Info methods
+  async getContactInfo(): Promise<ContactInfo | null> {
+    // Get from localStorage as fallback
+    const localData = localStorage.getItem('contact-info-storage');
+    let fallbackData = null;
+    if (localData) {
+      try {
+        const parsed = JSON.parse(localData);
+        fallbackData = parsed.state?.contactInfo || null;
+      } catch (error) {
+        console.error('Error parsing local contact info:', error);
+      }
+    }
+    
+    return this.fetchWithFallback<ContactInfo | null>(`${this.apiBasePath}/contact-info`, fallbackData);
+  }
+
+  async updateContactInfo(contactInfo: ContactInfo): Promise<boolean> {
+    if (!this.status.connected) {
+      console.warn('MongoDB not connected. Contact info will be updated locally instead.');
+      return false;
+    }
+    
+    try {
+      const response = await fetch(`${this.apiBasePath}/contact-info`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactInfo)
+      });
+      
+      return response.ok;
+    } catch (error) {
+      console.error('Error updating contact info in MongoDB:', error);
       return false;
     }
   }

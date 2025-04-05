@@ -6,7 +6,7 @@ interface IVideoItem {
   thumbnail: string;
   title: string;
   duration: string;
-  videoUrl?: string; // Adding videoUrl field
+  videoUrl?: string;
 }
 
 export interface IProject extends Document {
@@ -30,7 +30,7 @@ const videoItemSchema = new Schema<IVideoItem>({
   thumbnail: String,
   title: String,
   duration: String,
-  videoUrl: String, // Adding videoUrl field
+  videoUrl: String,
 }, { _id: false });
 
 const projectSchema = new Schema<IProject>({

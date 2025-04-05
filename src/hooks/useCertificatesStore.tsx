@@ -1,6 +1,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import MongoDBService from '@/services/mongodb';
 
 export interface Certificate {
   id: string;
@@ -12,11 +13,15 @@ export interface Certificate {
 
 interface CertificatesState {
   certificates: Certificate[];
+  loading: boolean;
+  useMongoDBBackend: boolean;
+  setUseMongoDBBackend: (useMongoDBBackend: boolean) => void;
   addCertificate: (certificate: Certificate) => void;
   updateCertificate: (certificate: Certificate) => void;
   deleteCertificate: (certificateId: string) => void;
   getCertificate: (certificateId: string) => Certificate | undefined;
   getAllCertificates: () => Certificate[];
+  loadFromMongoDB: () => Promise<void>;
 }
 
 // Инициализация с данными из компонента Certificates
@@ -48,11 +53,38 @@ export const useCertificatesStore = create<CertificatesState>()(
   persist(
     (set, get) => ({
       certificates: initialCertificates,
+      loading: false,
+      useMongoDBBackend: false,
+      
+      setUseMongoDBBackend: (useMongoDBBackend: boolean) => {
+        set({ useMongoDBBackend });
+        if (useMongoDBBackend) {
+          get().loadFromMongoDB();
+        }
+      },
+      
+      loadFromMongoDB: async () => {
+        if (!get().useMongoDBBackend) return;
+        
+        set({ loading: true });
+        const mongoService = MongoDBService.getInstance();
+        const certificates = await mongoService.getAllCertificates();
+        
+        if (certificates && certificates.length > 0) {
+          set({ certificates });
+        }
+        set({ loading: false });
+      },
       
       addCertificate: (certificate: Certificate) => {
         set((state) => ({
           certificates: [...state.certificates, certificate]
         }));
+        
+        if (get().useMongoDBBackend) {
+          const mongoService = MongoDBService.getInstance();
+          mongoService.addCertificate(certificate);
+        }
       },
       
       updateCertificate: (certificate: Certificate) => {
@@ -61,12 +93,22 @@ export const useCertificatesStore = create<CertificatesState>()(
             c.id === certificate.id ? certificate : c
           )
         }));
+        
+        if (get().useMongoDBBackend) {
+          const mongoService = MongoDBService.getInstance();
+          mongoService.updateCertificate(certificate);
+        }
       },
       
       deleteCertificate: (certificateId: string) => {
         set((state) => ({
           certificates: state.certificates.filter((c) => c.id !== certificateId)
         }));
+        
+        if (get().useMongoDBBackend) {
+          const mongoService = MongoDBService.getInstance();
+          mongoService.deleteCertificate(certificateId);
+        }
       },
       
       getCertificate: (certificateId: string) => {
@@ -82,5 +124,14 @@ export const useCertificatesStore = create<CertificatesState>()(
     }
   )
 );
+
+// Load MongoDB preference from ProjectStore and initialize
+if (typeof window !== 'undefined') {
+  const storedPreference = localStorage.getItem('useMongoDBBackend');
+  if (storedPreference) {
+    const useMongoDBBackend = JSON.parse(storedPreference);
+    useCertificatesStore.getState().setUseMongoDBBackend(useMongoDBBackend);
+  }
+}
 
 export default useCertificatesStore;
