@@ -8,96 +8,82 @@ const router = express.Router();
 // Get all certificates
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const certificates = await Certificate.find();
-    
-    // If no certificates, create default ones
-    if (certificates.length === 0) {
-      const defaultCertificates = [
-        {
-          id: '1',
-          title: 'Polish Language Proficiency (B2)',
-          institution: 'Szkoła Języka Polskiego Tylko Polski',
-          year: 'N/A',
-          description: 'Certified proficiency in Polish as a foreign language at B2 level.'
-        },
-        {
-          id: '2',
-          title: 'Mastering Tenses - Intensive Online Course',
-          institution: 'LinguaTrip',
-          year: '2020',
-          description: 'Completed an intensive course on mastering English tense structures.'
-        },
-        {
-          id: '3',
-          title: 'Journalism Experience Certificate',
-          institution: 'Kurier Akademicki',
-          year: '2024',
-          description: 'Editorial board member responsible for writing scripts, conducting interviews, and editing journalistic materials.'
-        }
-      ];
-      
-      await Certificate.insertMany(defaultCertificates);
-      return res.json(defaultCertificates);
-    }
-    
+    const certificates = await Certificate.find().sort({ year: -1 });
     res.json(certificates);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching certificates' });
   }
 });
 
-// Get a specific certificate
+// Get certificate by ID
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const certificate = await Certificate.findOne({ id: req.params.id });
+    
     if (!certificate) {
       return res.status(404).json({ error: 'Certificate not found' });
     }
+    
     res.json(certificate);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching certificate' });
   }
 });
 
-// Add a new certificate
+// Create new certificate
 router.post('/', async (req: Request, res: Response) => {
   try {
+    const { title, institution, year, description } = req.body;
+    
+    // Generate UUID for the certificate
     const newCertificate = new Certificate({
-      ...req.body,
-      id: req.body.id || uuidv4()
+      id: uuidv4(),
+      title,
+      institution,
+      year,
+      description
     });
+    
     await newCertificate.save();
     res.status(201).json(newCertificate);
   } catch (error) {
-    res.status(400).json({ error: 'Error adding certificate' });
+    res.status(400).json({ error: 'Error creating certificate' });
   }
 });
 
-// Update a certificate
+// Update certificate
 router.put('/:id', async (req: Request, res: Response) => {
   try {
-    const certificate = await Certificate.findOneAndUpdate(
-      { id: req.params.id },
-      req.body,
-      { new: true }
-    );
+    const { title, institution, year, description } = req.body;
+    
+    const certificate = await Certificate.findOne({ id: req.params.id });
+    
     if (!certificate) {
       return res.status(404).json({ error: 'Certificate not found' });
     }
+    
+    certificate.title = title;
+    certificate.institution = institution;
+    certificate.year = year;
+    certificate.description = description;
+    
+    await certificate.save();
     res.json(certificate);
   } catch (error) {
     res.status(400).json({ error: 'Error updating certificate' });
   }
 });
 
-// Delete a certificate
+// Delete certificate
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const certificate = await Certificate.findOneAndDelete({ id: req.params.id });
-    if (!certificate) {
+    const result = await Certificate.deleteOne({ id: req.params.id });
+    
+    if (result.deletedCount === 0) {
       return res.status(404).json({ error: 'Certificate not found' });
     }
-    res.json({ message: 'Certificate deleted' });
+    
+    res.json({ message: 'Certificate deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Error deleting certificate' });
   }
