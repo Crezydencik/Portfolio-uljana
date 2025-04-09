@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,10 +15,18 @@ const MongoDBConfig = () => {
   const { useMongoDBBackend, setUseMongoDBBackend } = useProjectStore();
   const mongoService = MongoDBService.getInstance();
   
-  const [connectionString, setConnectionString] = useState(mongoService.connectionString || '');
-  const [database, setDatabase] = useState(mongoService.database || '');
-  const [collection, setCollection] = useState(mongoService.collection || '');
+  const [connectionString, setConnectionString] = useState(mongoService.connectionString || 'mongodb+srv://admin:Port.ulj25@ulyanavalyn.jwj9sbo.mongodb.net/?retryWrites=true&w=majority&appName=UlyanaValyn');
+  const [database, setDatabase] = useState(mongoService.database || 'ulyanavalyn');
+  const [collection, setCollection] = useState(mongoService.collection || 'ulyanavalyn');
   const [isConnecting, setIsConnecting] = useState(false);
+  
+  // Автоматически заполнять поля из .env при первой загрузке
+  useEffect(() => {
+    // Проверяем, загружены ли уже данные
+    if (!mongoService.connectionString && process.env.MONGO_URI) {
+      setConnectionString(process.env.MONGO_URI);
+    }
+  }, []);
   
   const handleConnect = async () => {
     setIsConnecting(true);
@@ -84,7 +92,7 @@ const MongoDBConfig = () => {
               id="connection-string"
               value={connectionString}
               onChange={(e) => setConnectionString(e.target.value)}
-              placeholder="mongodb://username:password@localhost:27017"
+              placeholder="mongodb+srv://username:password@cluster.mongodb.net"
             />
           </div>
           

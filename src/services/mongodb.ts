@@ -1,4 +1,3 @@
-
 import { Project, MongoDBCredentials, MongoDBStatus } from '@/types/project';
 import { AuthorInfo } from '@/hooks/useAuthorInfoStore';
 import { Certificate } from '@/hooks/useCertificatesStore';
@@ -22,16 +21,10 @@ class MongoDBService {
         this.database = credentials.database;
         this.collection = credentials.collection;
         
-        // Extract host from connection string for API path
-        try {
-          const url = new URL(this.connectionString);
-          this.apiBasePath = `${url.protocol}//${url.host}/api`;
-        } catch (error) {
-          console.error('Invalid connection string format:', error);
-          this.apiBasePath = 'http://localhost:3000/api'; // Fallback
-        }
+        // Set API path for backend requests - always use relative path
+        this.apiBasePath = '/api';
       } else {
-        this.apiBasePath = 'http://localhost:3000/api'; // Default
+        this.apiBasePath = '/api'; // Default
       }
     }
   }
@@ -53,25 +46,24 @@ class MongoDBService {
     const credentials: MongoDBCredentials = { connectionString, database, collection };
     localStorage.setItem('mongodbCredentials', JSON.stringify(credentials));
     
-    // Extract host from connection string for API path
-    try {
-      const url = new URL(connectionString);
-      this.apiBasePath = `${url.protocol}//${url.host}/api`;
-    } catch (error) {
-      console.error('Invalid connection string format:', error);
-      this.apiBasePath = 'http://localhost:3000/api'; // Fallback
-    }
+    // Set API path for backend requests - always use relative path
+    this.apiBasePath = '/api';
     
-    // Simulate API call to check connection
+    // Test connection with a simple API call
     try {
-      // In a real app, we'd make an API call to verify the connection
-      this.status = { 
-        connected: true, 
-        database, 
-        collection 
-      };
-      return true;
+      const response = await fetch(`${this.apiBasePath}/projects`);
+      if (response.ok) {
+        this.status = { 
+          connected: true, 
+          database, 
+          collection 
+        };
+        return true;
+      } else {
+        throw new Error(`HTTP error ${response.status}`);
+      }
     } catch (error) {
+      console.error('MongoDB connection test failed:', error);
       this.status = { 
         connected: false, 
         error: error instanceof Error ? error.message : 'Unknown error'
