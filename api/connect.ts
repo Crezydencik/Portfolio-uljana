@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb'
 
 export default async function handler(req: any, res: any) {
-  const uri = process.env.MONGODB_URI
+  const uri = process.env.MONGO_URI
 
   if (!uri) {
     return res.status(500).json({ error: 'MongoDB URI is not defined' })
