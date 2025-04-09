@@ -1,12 +1,12 @@
 
-import express, { Request, Response } from 'express';
+import express from 'express';
 import Certificate from '../models/Certificate';
 import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 
 // Get all certificates
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req, res) => {
   try {
     const certificates = await Certificate.find().sort({ year: -1 });
     res.json(certificates);
@@ -16,7 +16,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // Get certificate by ID
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req, res) => {
   try {
     const certificate = await Certificate.findOne({ id: req.params.id });
     
@@ -31,7 +31,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 });
 
 // Create new certificate
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req, res) => {
   try {
     const { title, institution, year, description } = req.body;
     
@@ -52,7 +52,7 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 // Update certificate
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/:id', async (req, res) => {
   try {
     const { title, institution, year, description } = req.body;
     
@@ -75,7 +75,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 });
 
 // Delete certificate
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', async (req, res) => {
   try {
     const result = await Certificate.deleteOne({ id: req.params.id });
     

@@ -33,7 +33,7 @@ mongoose.connect(mongoURI)
     console.error('Connection string used:', mongoURI);
   });
 
-// API routes
+// API routes - важно расположить их ДО статических файлов
 app.use('/api/projects', projectRoutes);
 app.use('/api/author-info', authorInfoRoutes);
 app.use('/api/certificates', certificateRoutes);
@@ -43,6 +43,17 @@ app.use('/api/contact-info', contactInfoRoutes);
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../dist')));
   
+  // Это должно быть ПОСЛЕ определения API-маршрутов
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+} else {
+  // В режиме разработки добавим простой маршрут для проверки API
+  app.get('/api/test', (req, res) => {
+    res.json({ message: 'API работает корректно' });
+  });
+  
+  // В режиме разработки также отдаем SPA для любых других маршрутов
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/index.html'));
   });

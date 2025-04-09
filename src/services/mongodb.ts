@@ -53,6 +53,12 @@ class MongoDBService {
     try {
       const response = await fetch(`${this.apiBasePath}/projects`);
       if (response.ok) {
+        // Проверяем, что ответ действительно содержит JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Ответ сервера не является JSON');
+        }
+        
         this.status = { 
           connected: true, 
           database, 
@@ -96,7 +102,28 @@ class MongoDBService {
     const localData = localStorage.getItem('projects');
     const localProjects: Project[] = localData ? Object.values(JSON.parse(localData)) : [];
     
-    return this.fetchWithFallback<Project[]>(`${this.apiBasePath}/projects`, localProjects);
+    try {
+      if (!this.status.connected) {
+        console.warn('MongoDB not connected. Using local data instead.');
+        return localProjects;
+      }
+      
+      const response = await fetch(`${this.apiBasePath}/projects`);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+      
+      // Проверяем, что ответ действительно содержит JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Ответ сервера не является JSON');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching projects:`, error);
+      return localProjects;
+    }
   }
 
   async saveProject(project: Project): Promise<boolean> {
