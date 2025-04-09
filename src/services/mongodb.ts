@@ -1,3 +1,4 @@
+
 import { Project, MongoDBCredentials, MongoDBStatus } from '@/types/project';
 import { AuthorInfo } from '@/hooks/useAuthorInfoStore';
 import { Certificate } from '@/hooks/useCertificatesStore';
@@ -51,23 +52,27 @@ class MongoDBService {
     
     // Test connection with a simple API call
     try {
+      console.log('Testing connection with API call to:', `${this.apiBasePath}/projects`);
       const response = await fetch(`${this.apiBasePath}/projects`);
-      if (response.ok) {
-        // Проверяем, что ответ действительно содержит JSON
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Ответ сервера не является JSON');
-        }
-        
-        this.status = { 
-          connected: true, 
-          database, 
-          collection 
-        };
-        return true;
-      } else {
+      
+      if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
       }
+      
+      // Проверяем, что ответ действительно содержит JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Ответ сервера не является JSON');
+      }
+      
+      await response.json(); // Проверяем, что можем получить JSON
+
+      this.status = { 
+        connected: true, 
+        database, 
+        collection 
+      };
+      return true;
     } catch (error) {
       console.error('MongoDB connection test failed:', error);
       this.status = { 

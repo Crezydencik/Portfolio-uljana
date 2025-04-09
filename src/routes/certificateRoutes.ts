@@ -1,12 +1,12 @@
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import Certificate from '../models/Certificate';
 import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 
 // Get all certificates
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const certificates = await Certificate.find().sort({ year: -1 });
     res.json(certificates);
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get certificate by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const certificate = await Certificate.findOne({ id: req.params.id });
     
@@ -31,7 +31,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new certificate
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     const { title, institution, year, description } = req.body;
     
@@ -52,22 +52,20 @@ router.post('/', async (req, res) => {
 });
 
 // Update certificate
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req: Request, res: Response) => {
   try {
     const { title, institution, year, description } = req.body;
     
-    const certificate = await Certificate.findOne({ id: req.params.id });
+    const certificate = await Certificate.findOneAndUpdate(
+      { id: req.params.id },
+      { title, institution, year, description },
+      { new: true }
+    );
     
     if (!certificate) {
       return res.status(404).json({ error: 'Certificate not found' });
     }
     
-    certificate.title = title;
-    certificate.institution = institution;
-    certificate.year = year;
-    certificate.description = description;
-    
-    await certificate.save();
     res.json(certificate);
   } catch (error) {
     res.status(400).json({ error: 'Error updating certificate' });
@@ -75,7 +73,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete certificate
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const result = await Certificate.deleteOne({ id: req.params.id });
     

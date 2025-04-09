@@ -16,9 +16,9 @@ const MongoDBConfig = () => {
   const { useMongoDBBackend, setUseMongoDBBackend } = useProjectStore();
   const mongoService = MongoDBService.getInstance();
   
-  const [connectionString, setConnectionString] = useState(mongoService.connectionString || 'mongodb+srv://admin:Port.ulj25@ulyanavalyn.jwj9sbo.mongodb.net/?retryWrites=true&w=majority&appName=UlyanaValyn');
+  const [connectionString, setConnectionString] = useState(mongoService.connectionString || 'mongodb+srv://admin:Port.ulj25@ulyanavalyn.jwj9sbo.mongodb.net/ulyanavalyn?retryWrites=true&w=majority&appName=UlyanaValyn');
   const [database, setDatabase] = useState(mongoService.database || 'ulyanavalyn');
-  const [collection, setCollection] = useState(mongoService.collection || 'projects');
+  const [collection, setCollection] = useState(mongoService.collection || 'ulyanavalyn');
   const [isConnecting, setIsConnecting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
@@ -26,9 +26,9 @@ const MongoDBConfig = () => {
   useEffect(() => {
     // Проверяем, загружены ли уже данные
     if (!mongoService.connectionString) {
-      setConnectionString('mongodb+srv://admin:Port.ulj25@ulyanavalyn.jwj9sbo.mongodb.net/?retryWrites=true&w=majority&appName=UlyanaValyn');
+      setConnectionString('mongodb+srv://admin:Port.ulj25@ulyanavalyn.jwj9sbo.mongodb.net/ulyanavalyn?retryWrites=true&w=majority&appName=UlyanaValyn');
       setDatabase('ulyanavalyn');
-      setCollection('projects');
+      setCollection('ulyanavalyn');
     }
   }, []);
   
@@ -42,6 +42,7 @@ const MongoDBConfig = () => {
         throw new Error('Неверный формат строки подключения MongoDB');
       }
       
+      console.log('Attempting to connect with:', connectionString, database, collection);
       const success = await mongoService.connect(connectionString, database, collection);
       
       if (success) {
@@ -51,11 +52,7 @@ const MongoDBConfig = () => {
         });
         setUseMongoDBBackend(true);
       } else {
-        toast({
-          title: 'Ошибка подключения',
-          description: 'Не удалось подключиться к MongoDB. Проверьте учетные данные.',
-          variant: 'destructive',
-        });
+        throw new Error('Не удалось подключиться к MongoDB. Проверьте учетные данные.');
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Неизвестная ошибка при подключении к MongoDB';
@@ -72,7 +69,11 @@ const MongoDBConfig = () => {
 
   const handleTestApiEndpoint = async () => {
     try {
+      console.log('Testing API endpoint...');
       const response = await fetch('/api/test');
+      if (!response.ok) {
+        throw new Error(`Ошибка API: ${response.status}`);
+      }
       const data = await response.json();
       toast({
         title: 'API Test',
@@ -140,7 +141,7 @@ const MongoDBConfig = () => {
               id="database"
               value={database}
               onChange={(e) => setDatabase(e.target.value)}
-              placeholder="portfolio"
+              placeholder="ulyanavalyn"
             />
           </div>
           
@@ -150,7 +151,7 @@ const MongoDBConfig = () => {
               id="collection"
               value={collection}
               onChange={(e) => setCollection(e.target.value)}
-              placeholder="projects"
+              placeholder="ulyanavalyn"
             />
           </div>
         </div>
